@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理面板 - 智能医生预约系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background-color: #f5f6fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #1976d2;
+            color: #fff;
+            padding: 16px 32px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 { color: #1976d2; margin-bottom: 10px; font-size: 18px; }
+        .card p { color: #777; font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="navbar">管理面板</div>
+    <div class="container">
+        <div class="card-grid">
+            <a class="card" href="/admin/">
+                <h3>Django 管理后台</h3>
+                <p>管理用户、医院、医生、预约等全部数据</p>
+            </a>
+            <a class="card" href="/api/monitoring/">
+                <h3>监控中心</h3>
+                <p>查看 API 性能指标、错误率与告警信息</p>
+            </a>
+            <a class="card" href="/hospital-list/">
+                <h3>医院列表</h3>
+                <p>查看系统中已收录的医院信息</p>
+            </a>
+            <a class="card" href="/appointment-list/">
+                <h3>预约列表</h3>
+                <p>查看和管理用户的预约记录</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!-- 列表项组件 -->
+<view class="list-item {{customClass}}" bindtap="onItemTap" data-item="{{item}}">
+  <image 
+    src="{{item.image || item.avatar || '/images/default-avatar.png'}}" 
+    class="item-image" 
+    mode="aspectFill"
+    binderror="onImageError"
+    data-index="{{index}}"
+  ></image>
+  
+  <view class="item-content">
+    <view class="item-header">
+      <text class="item-title">{{item.name || item.title}}</text>
+      <text class="item-subtitle" wx:if="{{item.subtitle || item.level}}">{{item.subtitle || item.level}}</text>
+    </view>
+    
+    <view class="item-details">
+      <text class="item-desc" wx:if="{{item.address || item.specialty}}">{{item.address || item.specialty}}</text>
+      <text class="item-desc" wx:if="{{item.phone || item.hospital_name}}">{{item.phone || item.hospital_name}}</text>
+    </view>
+
+    <view class="item-stats" wx:if="{{showStats}}">
+      <view class="stat-item" wx:if="{{item.average_rating !== undefined}}">
+        <text class="iconfont icon-star stat-icon"></text>
+        <text class="stat-text">{{item.average_rating || 0}}分</text>
+        <text class="stat-count">({{item.review_count || 0}})</text>
+      </view>
+      
+      <view class="stat-item" wx:if="{{item.total_doctors}}">
+        <text class="iconfont icon-doctor stat-icon"></text>
+        <text class="stat-text">{{item.total_doctors || 0}}位医生</text>
+      </view>
+      
+      <view class="stat-item" wx:if="{{item.patient_count}}">
+        <text class="iconfont icon-user stat-icon"></text>
+        <text class="stat-text">{{item.patient_count || 0}}位患者</text>
+      </view>
+    </view>
+
+    <view class="item-tags" wx:if="{{item.tags || item.specialties}}">
+      <text 
+        class="tag" 
+        wx:for="{{item.tags || item.specialties}}" 
+        wx:key="*this"
+      >{{item}}</text>
+    </view>
+  </view>
+
+  <view class="item-actions" wx:if="{{showActions}}">
+    <slot name="actions"></slot>
+  </view>
+</view>

@@ -1,0 +1,55 @@
+/* 搜索栏组件样式 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--spacing-md);
+  height: 72rpx;
+}
+
+.search-icon {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-lg);
+  margin-right: var(--spacing-sm);
+}
+
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.search-clear {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-lg);
+  margin-left: var(--spacing-sm);
+  padding: var(--spacing-xs);
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  margin-left: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.filter-btn .iconfont {
+  font-size: var(--font-size-base);
+  margin-right: var(--spacing-xs);
+}

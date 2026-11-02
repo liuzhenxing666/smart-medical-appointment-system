@@ -1,0 +1,13 @@
+<!-- WebView页面 -->
+<view class="webview-container">
+  <view class="webview-content" wx:if="{{!error}}">
+    <web-view src="{{url}}" bindmessage="onMessage" bindload="onWebViewLoad" binderror="onError"></web-view>
+  </view>
+
+  <view class="state" wx:if="{{error}}">
+    <view class="state-mark">!</view>
+    <text class="state-title">页面加载失败</text>
+    <text class="state-desc">{{errorMessage}}</text>
+    <view class="state-btn" bindtap="retryLoad">重新加载</view>
+  </view>
+</view>

@@ -1,0 +1,137 @@
+<!-- 医院导航页面 -->
+<view class="page">
+  <!-- 搜索 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <view class="search-ico">
+        <view class="search-ico-ring"></view>
+        <view class="search-ico-line"></view>
+      </view>
+      <input
+        class="search-input"
+        placeholder="搜索医院名称或地址"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</text>
+    </view>
+  </view>
+
+  <!-- 地图 -->
+  <view class="map-section">
+    <map
+      id="hospitalMap"
+      class="hospital-map"
+      latitude="{{mapCenter.latitude}}"
+      longitude="{{mapCenter.longitude}}"
+      scale="{{mapScale}}"
+      markers="{{markers}}"
+      polyline="{{polyline}}"
+      show-location
+      bindmarkertap="onMarkerTap"
+      bindregionchange="onRegionChange"
+    ></map>
+
+    <view class="map-controls">
+      <view class="map-btn" bindtap="locateUser">
+        <view class="ico-locate">
+          <view class="ico-locate-dot"></view>
+        </view>
+      </view>
+      <view class="map-btn" bindtap="zoomIn">
+        <text class="map-btn-txt">+</text>
+      </view>
+      <view class="map-btn" bindtap="zoomOut">
+        <text class="map-btn-txt">−</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 医院列表 -->
+  <view class="list-section">
+    <view class="list-head">
+      <text class="list-title">附近医院</text>
+      <text class="list-count">共 {{filteredHospitals.length}} 家</text>
+    </view>
+
+    <scroll-view class="hospital-list" scroll-y>
+      <view
+        class="hospital-item"
+        wx:for="{{filteredHospitals}}"
+        wx:key="id"
+        bindtap="selectHospital"
+        data-hospital="{{item}}"
+      >
+        <image
+          class="hospital-thumb"
+          src="{{item.image_url || '../../images/hospital-default.png'}}"
+          mode="aspectFill"
+          binderror="handleImageError"
+          data-type="hospital"
+          data-index="{{index}}"
+        ></image>
+        <view class="hospital-main">
+          <text class="hospital-name">{{item.name}}</text>
+          <text class="hospital-address">{{item.address}}</text>
+          <view class="hospital-meta">
+            <text class="hospital-distance">{{item.distance || '未知'}} km</text>
+            <text class="hospital-rating">评分 {{item.rating || '暂无'}}</text>
+          </view>
+        </view>
+        <text class="hospital-arrow">›</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty" wx:if="{{filteredHospitals.length === 0}}">
+        <view class="empty-badge">医</view>
+        <text class="empty-text">暂无医院数据</text>
+        <button class="btn-ghost" bindtap="retryInit">重试</button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 路线规划面板 -->
+  <view class="route-panel" wx:if="{{selectedHospital && routeMode}}">
+    <view class="panel-head">
+      <text class="panel-title">路线规划</text>
+      <text class="panel-close" bindtap="closeRoutePanel">×</text>
+    </view>
+
+    <view class="route-info">
+      <view class="route-line">
+        <text class="route-label">目的地</text>
+        <text class="route-value">{{selectedHospital.name}}</text>
+      </view>
+      <view class="route-line">
+        <text class="route-label">距离</text>
+        <text class="route-value">{{routeDistance || '计算中...'}}</text>
+      </view>
+      <view class="route-line">
+        <text class="route-label">预计时间</text>
+        <text class="route-value">{{routeDuration || '计算中...'}}</text>
+      </view>
+    </view>
+
+    <view class="route-actions">
+      <button class="route-btn route-primary" bindtap="planRoute" data-mode="driving">驾车</button>
+      <button class="route-btn route-ghost" bindtap="planRoute" data-mode="walking">步行</button>
+      <button class="route-btn route-ghost" bindtap="planRoute" data-mode="transit">公交</button>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="overlay" wx:if="{{loading}}">
+    <view class="overlay-card">
+      <text class="overlay-text">正在加载医院数据</text>
+    </view>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="overlay" wx:if="{{error}}">
+    <view class="overlay-card">
+      <text class="overlay-title">加载失败</text>
+      <text class="overlay-text">{{error}}</text>
+      <button class="btn-ghost" bindtap="retryInit">重试</button>
+    </view>
+  </view>
+</view>

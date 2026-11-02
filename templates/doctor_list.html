@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医生列表 - 智能医疗预约系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .doctor-card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border: none;
+        }
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .doctor-header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .search-container {
+            background: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .rating-stars {
+            color: #FFD700;
+        }
+        .title-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 15px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+        }
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e0e0e0;
+        }
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital"></i> 智能医疗预约系统
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">首页</a>
+                <a class="nav-link" href="/hospital-list/">医院列表</a>
+                <a class="nav-link active" href="/doctors/">医生列表</a>
+                <a class="nav-link" href="/appointment-booking/">预约挂号</a>
+                <a class="nav-link" href="/appointment-list/">我的预约</a>
+                <a class="nav-link" href="/profile/">个人中心</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <div class="doctor-header">
+        <div class="container">
+            <h1><i class="fas fa-user-md"></i> 专家医生</h1>
+            <p class="lead mb-0">精选优质医生资源，在线预约挂号</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 搜索和筛选 -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0" id="search-input"
+                               placeholder="搜索医生姓名、专业方向或所属医院...">
+                        <button class="btn btn-primary" onclick="filterDoctors()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="title-filter" onchange="filterDoctors()">
+                    <option value="">所有职称</option>
+                    <option value="主任医师">主任医师</option>
+                    <option value="副主任医师">副主任医师</option>
+                    <option value="主治医师">主治医师</option>
+                    <option value="住院医师">住院医师</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 医生列表 -->
+        <div id="doctors-container" class="row">
+            <div class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <p class="mt-2">正在加载医生数据...</p>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <nav aria-label="医生列表分页" class="mt-4">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 智能医疗预约系统. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let allDoctors = [];
+        let currentPage = 1;
+        const doctorsPerPage = 6;
+
+        document.addEventListener('DOMContentLoaded', loadDoctors);
+
+        // 加载医生数据
+        async function loadDoctors() {
+            const container = document.getElementById('doctors-container');
+            try {
+                const response = await fetch('/api/doctors/');
+                const result = await response.json();
+
+                if (result.success) {
+                    allDoctors = (result.data && result.data.results) || result.data || [];
+                    filterDoctors();
+                } else {
+                    throw new Error(result.message || '获取医生数据失败');
+                }
+            } catch (error) {
+                console.error('加载医生数据失败:', error);
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-exclamation-circle text-danger fa-3x mb-3"></i>
+                        <p>加载医生数据失败，请稍后重试</p>
+                    </div>`;
+            }
+        }
+
+        // 前端搜索/筛选 + 分页渲染
+        function filterDoctors() {
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            const title = document.getElementById('title-filter').value;
+
+            const filtered = allDoctors.filter(d => {
+                const matchKeyword = !keyword ||
+                    (d.name || '').toLowerCase().includes(keyword) ||
+                    (d.specialty || '').toLowerCase().includes(keyword) ||
+                    (d.hospital_name || '').toLowerCase().includes(keyword);
+                const matchTitle = !title || d.title === title;
+                return matchKeyword && matchTitle;
+            });
+
+            currentPage = 1;
+            displayDoctors(filtered);
+        }
+
+        function displayDoctors(doctors) {
+            const container = document.getElementById('doctors-container');
+            const totalPages = Math.ceil(doctors.length / doctorsPerPage);
+            const start = (currentPage - 1) * doctorsPerPage;
+            const pageDoctors = doctors.slice(start, start + doctorsPerPage);
+
+            if (!pageDoctors.length) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-search text-muted fa-3x mb-3"></i>
+                        <p>没有找到符合条件的医生</p>
+                    </div>`;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = pageDoctors.map(d => {
+                const stars = renderStars(d.average_rating);
+                const avatar = d.avatar_url
+                    ? `<img src="${d.avatar_url}" alt="${d.name}" class="doctor-avatar" onerror="this.outerHTML=placeholderHtml('${d.name}')">`
+                    : placeholderHtml(d.name);
+                return `
+                <div class="col-md-6 col-lg-4">
+                    <div class="card doctor-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                ${avatar}
+                                <div class="ms-3">
+                                    <h5 class="card-title mb-1">${d.name || '未知医生'}</h5>
+                                    <span class="title-badge">${d.title || '医师'}</span>
+                                </div>
+                            </div>
+                            <p class="mb-1"><i class="fas fa-stethoscope text-primary"></i>
+                                专业：${d.specialty || '综合'}</p>
+                            <p class="mb-1"><i class="fas fa-hospital text-primary"></i>
+                                ${d.hospital_name || '-'} · ${d.department_name || '-'}</p>
+                            <p class="mb-2">
+                                <span class="rating-stars">${stars}</span>
+                                <small class="text-muted">${(d.average_rating || 0).toFixed(1)} 分 (${d.review_count || 0}条评价)</small>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-danger fw-bold">¥${d.consultation_fee || 0} <small class="text-muted fw-normal">/次</small></span>
+                                <span class="badge ${d.is_available ? 'bg-success' : 'bg-secondary'}">
+                                    ${d.is_available ? '可预约' : '已约满'}
+                                </span>
+                            </div>
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="/doctor-detail/${d.id}/" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-user"></i> 查看详情
+                                </a>
+                                <a href="/appointment-booking/?doctor=${d.id}" class="btn btn-primary btn-sm"
+                                   ${d.is_available ? '' : 'disabled'}>
+                                    <i class="fas fa-calendar-check"></i> 立即预约
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            renderPagination(totalPages);
+        }
+
+        function placeholderHtml(name) {
+            return `<div class="avatar-placeholder">${(name || '医')[0]}</div>`;
+        }
+
+        function renderStars(rating) {
+            const full = Math.round(rating || 0);
+            return '★'.repeat(full) + '☆'.repeat(5 - full);
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="goToPage(${i})">${i}</a>
+                    </li>`;
+            }
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            const title = document.getElementById('title-filter').value;
+            const filtered = allDoctors.filter(d => {
+                const matchKeyword = !keyword ||
+                    (d.name || '').toLowerCase().includes(keyword) ||
+                    (d.specialty || '').toLowerCase().includes(keyword) ||
+                    (d.hospital_name || '').toLowerCase().includes(keyword);
+                const matchTitle = !title || d.title === title;
+                return matchKeyword && matchTitle;
+            });
+            displayDoctors(filtered);
+        }
+    </script>
+</body>
+</html>

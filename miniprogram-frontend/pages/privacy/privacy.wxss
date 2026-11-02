@@ -1,0 +1,58 @@
+/* 隐私政策页面 */
+.doc-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f7f5;
+}
+
+.doc-scroll {
+  flex: 1;
+  height: 0;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.doc-section {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 32rpx;
+  margin-bottom: 12rpx;
+}
+
+.doc-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+  margin-bottom: 16rpx;
+}
+
+.doc-text {
+  display: block;
+  font-size: 27rpx;
+  line-height: 1.75;
+  color: #57534e;
+  white-space: pre-wrap;
+}
+
+.doc-footer {
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+  border-top: 1rpx solid #f0efec;
+}
+
+.doc-btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background-color: #0d9488;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 8rpx;
+}
+
+.doc-btn:active {
+  background-color: #0f766e;
+}

@@ -1,0 +1,143 @@
+<!-- 医院详情页面 -->
+<view class="page">
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-txt">正在加载医院信息</text>
+  </view>
+
+  <!-- 加载失败 -->
+  <view class="state-error" wx:elif="{{error}}">
+    <view class="error-badge">!</view>
+    <text class="error-txt">{{error}}</text>
+    <view class="btn-retry" bindtap="retryLoad">重新加载</view>
+  </view>
+
+  <!-- 详情内容 -->
+  <block wx:elif="{{hospital}}">
+    <!-- 全宽头图 -->
+    <image wx:if="{{hospital.image_url}}" class="hero-img" src="{{hospital.image_url}}" mode="aspectFill" binderror="onImageError"></image>
+    <view wx:else class="hero-ph">
+      <text class="hero-ph-txt">医</text>
+    </view>
+
+    <!-- 标题与关键信息 -->
+    <view class="head">
+      <view class="head-top">
+        <text class="h-name">{{hospital.name || '未知医院'}}</text>
+        <view class="h-fav {{isFavorited ? 'on' : ''}}" bindtap="toggleFavorite">{{isFavorited ? '已收藏' : '收藏'}}</view>
+      </view>
+      <view class="badges">
+        <text class="badge badge-strong">{{hospital.level || '未分级'}}</text>
+        <text class="badge" wx:if="{{hospital.type}}">{{hospital.type}}</text>
+        <text class="badge badge-tcm" wx:if="{{hospital.is_tcm}}">中医</text>
+      </view>
+      <view class="meta" wx:if="{{hospital.address}}">
+        <view class="meta-ic">址</view>
+        <text class="meta-txt">{{hospital.address}}</text>
+      </view>
+      <view class="meta" wx:if="{{hospital.phone}}">
+        <view class="meta-ic">电</view>
+        <text class="meta-txt">{{hospital.phone}}</text>
+      </view>
+    </view>
+
+    <!-- 评分与规模 -->
+    <view class="stats">
+      <view class="st">
+        <text class="st-val">{{hospital.average_rating || '5.0'}}</text>
+        <text class="st-lab">综合评分</text>
+      </view>
+      <view class="st">
+        <text class="st-val">{{hospital.review_count || 128}}</text>
+        <text class="st-lab">患者评价</text>
+      </view>
+      <view class="st">
+        <text class="st-val">{{hospital.doctor_count || 56}}</text>
+        <text class="st-lab">医生数量</text>
+      </view>
+    </view>
+
+    <!-- 快捷操作 -->
+    <view class="quick">
+      <view class="qa" bindtap="navigateToHospital">
+        <view class="qa-ic">导</view>
+        <text class="qa-txt">导航前往</text>
+      </view>
+      <view class="qa" wx:if="{{hospital.phone}}" bindtap="callHospital">
+        <view class="qa-ic">电</view>
+        <text class="qa-txt">电话咨询</text>
+      </view>
+      <view class="qa" bindtap="viewDoctors">
+        <view class="qa-ic">医</view>
+        <text class="qa-txt">医生团队</text>
+      </view>
+      <button class="qa qa-btn" open-type="share">
+        <view class="qa-ic">享</view>
+        <text class="qa-txt">分享</text>
+      </button>
+    </view>
+
+    <!-- 中医特色 -->
+    <view class="section" wx:if="{{hospital.specialties && hospital.specialties.length > 0}}">
+      <view class="sec-head">
+        <text class="sec-title">中医特色</text>
+        <text class="sec-extra">{{hospital.specialties.length}} 项</text>
+      </view>
+      <view class="tags">
+        <text class="tag" wx:for="{{hospital.specialties}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 科室信息 -->
+    <view class="section" wx:if="{{hospital.departments && hospital.departments.length > 0}}">
+      <view class="sec-head">
+        <text class="sec-title">科室信息</text>
+        <text class="sec-extra">{{hospital.departments.length}} 个科室</text>
+      </view>
+      <view class="dept" wx:for="{{hospital.departments}}" wx:key="id">
+        <view class="dept-main">
+          <text class="dept-name">{{item.name}}</text>
+          <text class="dept-desc" wx:if="{{item.description}}">{{item.description}}</text>
+        </view>
+        <view class="chev"></view>
+      </view>
+    </view>
+
+    <!-- 医院介绍 -->
+    <view class="section">
+      <view class="sec-head">
+        <text class="sec-title">医院介绍</text>
+      </view>
+      <text class="intro">{{hospital.description || '暂无医院介绍'}}</text>
+    </view>
+
+    <!-- 医院环境 -->
+    <view class="section" wx:if="{{hospital.images && hospital.images.length > 0}}">
+      <view class="sec-head">
+        <text class="sec-title">医院环境</text>
+        <text class="sec-extra">{{hospital.images.length}} 张</text>
+      </view>
+      <scroll-view class="env-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+        <view class="env-row">
+          <image
+            class="env-img"
+            wx:for="{{hospital.images}}"
+            wx:key="id"
+            src="{{item.image}}"
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-src="{{item.image}}"
+          ></image>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 底部固定操作栏 -->
+    <view class="bottom-bar">
+      <view class="btn-fav {{isFavorited ? 'on' : ''}}" bindtap="toggleFavorite">{{isFavorited ? '已收藏' : '收藏'}}</view>
+      <view class="btn btn-ghost" bindtap="viewAppointments">查看预约</view>
+      <view class="btn btn-primary" bindtap="makeAppointment">立即预约</view>
+    </view>
+  </block>
+</view>

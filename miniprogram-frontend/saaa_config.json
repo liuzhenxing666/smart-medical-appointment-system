@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "description": "小程序配置文件",
+  "api_base_url": "http://localhost:8000/api/",
+  "debug": true,
+  "map_config": {
+    "provider": "qqmap",
+    "api_key": "OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"
+  }
+}

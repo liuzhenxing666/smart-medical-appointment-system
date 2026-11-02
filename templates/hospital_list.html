@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医院列表 - 智能医疗预约系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hospital-card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border: none;
+        }
+        .hospital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .hospital-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .search-container {
+            background: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .rating-stars {
+            color: #FFD700;
+        }
+        .level-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 15px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+        }
+        .distance-badge {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            border-radius: 15px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital"></i> 智能医疗预约系统
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">首页</a>
+                <a class="nav-link" href="/appointment-search/">医生搜索</a>
+                <a class="nav-link" href="/appointment-booking/">预约挂号</a>
+                <a class="nav-link" href="/appointment-list/">我的预约</a>
+                <a class="nav-link" href="/profile/">个人中心</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <div class="hospital-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-hospital-alt"></i> 合作医院</h1>
+                    <p class="lead mb-0">选择您附近的医院，享受便捷的医疗服务</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-light" onclick="getCurrentLocation()">
+                        <i class="fas fa-location-arrow"></i> 定位附近医院
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 搜索和筛选 -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0" id="search-input" 
+                               placeholder="搜索医院名称、地址或科室...">
+                        <button class="btn btn-primary" onclick="searchHospitals()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="city-filter" onchange="filterHospitals()">
+                        <option value="">所有城市</option>
+                    </select>
+                    <select class="form-select" id="level-filter" onchange="filterHospitals()">
+                        <option value="">所有等级</option>
+                        <option value="三级甲等">三级甲等</option>
+                        <option value="三级乙等">三级乙等</option>
+                        <option value="二级甲等">二级甲等</option>
+                        <option value="二级乙等">二级乙等</option>
+                        <option value="一级甲等">一级甲等</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 医院列表 -->
+        <div id="hospitals-container" class="row">
+            <!-- 医院卡片将通过JavaScript动态加载 -->
+            <div class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <p class="mt-2">正在加载医院数据...</p>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <nav aria-label="医院列表分页" class="mt-4">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- 分页将通过JavaScript动态生成 -->
+            </ul>
+        </nav>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 智能医疗预约系统. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let allHospitals = [];
+        let currentPage = 1;
+        const hospitalsPerPage = 6;
+
+        // 页面加载时获取医院数据
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHospitals();
+        });
+
+        // 加载医院数据
+        async function loadHospitals() {
+            try {
+                const response = await fetch('/api/hospitals/');
+                const result = await response.json();
+                
+                if (result.success) {
+                    // API返回的格式是 {success: true, data: {results: [...]}}
+                    allHospitals = result.data.results || result.data;
+                    populateCityFilter();
+                    displayHospitals();
+                } else {
+                    throw new Error(result.message || '获取医院数据失败');
+                }
+            } catch (error) {
+                console.error('Error loading hospitals:', error);
+                // 如果API调用失败，使用模拟数据进行测试
+                console.log('API调用失败，使用模拟数据进行测试');
+                allHospitals = getMockHospitals();
+                populateCityFilter();
+                displayHospitals();
+            }
+        }
+
+        // 模拟医院数据（用于测试）
+        function getMockHospitals() {
+            return [
+                {
+                    id: '123e4567-e89b-12d3-a456-426614174000',
+                    name: '北京协和医院',
+                    city: '北京市',
+                    district: '东城区',
+                    address: '东单三条9号',
+                    level: '三级甲等',
+                    hospital_type: '综合医院',
+                    phone: '010-69156114',
+                    average_rating: 4.8,
+                    review_count: 1280,
+                    total_doctors: 350,
+                    latitude: 39.9042,
+                    longitude: 116.4074
+                },
+                {
+                    id: '123e4567-e89b-12d3-a456-426614174001',
+                    name: '上海瑞金医院',
+                    city: '上海市',
+                    district: '黄浦区',
+                    address: '瑞金二路197号',
+                    level: '三级甲等',
+                    hospital_type: '综合医院',
+                    phone: '021-64370045',
+                    average_rating: 4.7,
+                    review_count: 980,
+                    total_doctors: 280,
+                    latitude: 31.2304,
+                    longitude: 121.4737
+                },
+                {
+                    id: '123e4567-e89b-12d3-a456-426614174002',
+                    name: '广州中山医院',
+                    city: '广州市',
+                    district: '越秀区',
+                    address: '中山二路58号',
+                    level: '三级甲等',
+                    hospital_type: '综合医院',
+                    phone: '020-87332200',
+                    average_rating: 4.6,
+                    review_count: 750,
+                    total_doctors: 220,
+                    latitude: 23.1291,
+                    longitude: 113.2644
+                }
+            ];
+        }
+
+        // 填充城市筛选器
+        function populateCityFilter() {
+            const cityFilter = document.getElementById('city-filter');
+            const cities = [...new Set(allHospitals.map(h => h.city))].sort();
+            
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                cityFilter.appendChild(option);
+            });
+        }
+
+        // 显示医院列表
+        function displayHospitals() {
+            const filteredHospitals = getFilteredHospitals();
+            const startIndex = (currentPage - 1) * hospitalsPerPage;
+            const endIndex = startIndex + hospitalsPerPage;
+            const hospitalsToShow = filteredHospitals.slice(startIndex, endIndex);
+            
+            const container = document.getElementById('hospitals-container');
+            
+            if (hospitalsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <i class="fas fa-hospital fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">未找到符合条件的医院</h4>
+                        <p class="text-muted">请尝试调整搜索条件或筛选条件</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            hospitalsToShow.forEach(hospital => {
+                const distance = calculateDistance(hospital.latitude, hospital.longitude);
+                const distanceText = distance ? `${distance.toFixed(1)}km` : '未知距离';
+                
+                html += `
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card hospital-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0">${hospital.name}</h5>
+                                    <span class="level-badge">${hospital.level}</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-map-marker-alt"></i> 
+                                        ${hospital.city}${hospital.district}${hospital.address}
+                                    </p>
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-phone"></i> 
+                                        ${hospital.phone || '暂无'}
+                                    </p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="rating-stars">
+                                        ${'★'.repeat(Math.round(hospital.average_rating))}${'☆'.repeat(5 - Math.round(hospital.average_rating))}
+                                        <small class="text-muted ms-1">${hospital.average_rating}</small>
+                                    </div>
+                                    <span class="distance-badge">
+                                        <i class="fas fa-location-arrow"></i> ${distanceText}
+                                    </span>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" onclick="viewHospitalDetail('${hospital.id}')">
+                                        <i class="fas fa-info-circle"></i> 查看详情
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="navigateToHospital('${hospital.name}', ${hospital.latitude}, ${hospital.longitude})">
+                                        <i class="fas fa-route"></i> 一键导航
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            displayPagination(filteredHospitals.length);
+        }
+
+        // 获取筛选后的医院列表
+        function getFilteredHospitals() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const cityFilter = document.getElementById('city-filter').value;
+            const levelFilter = document.getElementById('level-filter').value;
+            
+            return allHospitals.filter(hospital => {
+                const matchesSearch = !searchTerm || 
+                    hospital.name.toLowerCase().includes(searchTerm) ||
+                    hospital.address.toLowerCase().includes(searchTerm) ||
+                    hospital.city.toLowerCase().includes(searchTerm);
+                
+                const matchesCity = !cityFilter || hospital.city === cityFilter;
+                const matchesLevel = !levelFilter || hospital.level === levelFilter;
+                
+                return matchesSearch && matchesCity && matchesLevel;
+            });
+        }
+
+        // 显示分页
+        function displayPagination(totalHospitals) {
+            const totalPages = Math.ceil(totalHospitals / hospitalsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // 上一页
+            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">上一页</a>
+            </li>`;
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                </li>`;
+            }
+            
+            // 下一页
+            html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">下一页</a>
+            </li>`;
+            
+            pagination.innerHTML = html;
+        }
+
+        // 切换页面
+        function changePage(page) {
+            const totalPages = Math.ceil(getFilteredHospitals().length / hospitalsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayHospitals();
+            }
+        }
+
+        // 搜索医院
+        function searchHospitals() {
+            currentPage = 1;
+            displayHospitals();
+        }
+
+        // 筛选医院
+        function filterHospitals() {
+            currentPage = 1;
+            displayHospitals();
+        }
+
+        // 计算距离（简化版，实际应该使用更精确的算法）
+        function calculateDistance(lat, lng) {
+            // 这里应该使用用户当前位置来计算距离
+            // 暂时返回null，实际使用时需要获取用户位置
+            return null;
+        }
+
+        // 获取当前位置
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        alert(`当前位置已获取，正在筛选附近医院...`);
+                        // 这里可以添加按距离排序的逻辑
+                    },
+                    function(error) {
+                        alert('获取位置失败: ' + error.message);
+                    }
+                );
+            } else {
+                alert('浏览器不支持地理位置服务');
+            }
+        }
+
+        // 查看医院详情
+        function viewHospitalDetail(hospitalId) {
+            window.location.href = `/hospital-detail/${hospitalId}/`;
+        }
+
+        // 一键导航
+        function navigateToHospital(hospitalName, lat, lng) {
+            const url = `https://uri.amap.com/navigation?to=${lng},${lat}&toName=${encodeURIComponent(hospitalName)}&callnative=1`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

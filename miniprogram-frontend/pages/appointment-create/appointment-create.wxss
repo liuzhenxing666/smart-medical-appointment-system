@@ -1,0 +1,488 @@
+/* 预约创建页面样式 —— 青绿医疗风 */
+
+.page {
+  min-height: 100vh;
+  background-color: #f7f7f5;
+}
+
+/* ---------------- 加载状态 ---------------- */
+.state-block {
+  background-color: #ffffff;
+  min-height: 320rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+.state-text {
+  font-size: 24rpx;
+  color: #78716c;
+}
+
+.btn.state-btn {
+  flex: none;
+  width: 240rpx;
+  height: 72rpx;
+  line-height: 70rpx;
+  margin-top: 8rpx;
+  font-size: 26rpx;
+}
+
+.spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  background-color: #0d9488;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+/* ---------------- 区块 ---------------- */
+.block {
+  background-color: #ffffff;
+  padding: 32rpx;
+  margin-top: 12rpx;
+}
+
+.block:first-child {
+  margin-top: 0;
+}
+
+.block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.block-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.block-hint {
+  font-size: 22rpx;
+  color: #a8a29e;
+}
+
+/* ---------------- 医生信息 ---------------- */
+.doctor-head {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.doctor-avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+  background-color: #f0fdfa;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #0f766e;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  box-sizing: border-box;
+}
+
+.doctor-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.doctor-line {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.doctor-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-title {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  color: #0d9488;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+}
+
+.doctor-meta {
+  font-size: 24rpx;
+  color: #57534e;
+}
+
+.doctor-hospital {
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+.doctor-stats {
+  display: flex;
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0efec;
+}
+
+.stat {
+  flex: 1;
+  text-align: center;
+}
+
+.stat + .stat {
+  border-left: 1rpx solid #f0efec;
+}
+
+.stat-value {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+/* ---------------- 日期选择 ---------------- */
+.date-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.date-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.date-item {
+  flex-shrink: 0;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 8rpx;
+  background-color: #f7f7f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  box-sizing: border-box;
+}
+
+.date-week {
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+.date-num {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.date-item.active {
+  background-color: #0d9488;
+}
+
+.date-item.active .date-week,
+.date-item.active .date-num {
+  color: #ffffff;
+}
+
+.date-item:active {
+  opacity: 0.85;
+}
+
+/* ---------------- 时间选择 ---------------- */
+.time-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.time-item {
+  width: calc((100% - 32rpx) / 3);
+  height: 88rpx;
+  padding: 0 8rpx;
+  border-radius: 8rpx;
+  background-color: #f7f7f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  box-sizing: border-box;
+}
+
+.time-text {
+  font-size: 24rpx;
+  color: #1c1917;
+}
+
+.time-status {
+  font-size: 20rpx;
+  color: #a8a29e;
+}
+
+.time-item.active {
+  background-color: #0d9488;
+}
+
+.time-item.active .time-text {
+  color: #ffffff;
+}
+
+.time-item.active .time-status {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.time-item.disabled {
+  background-color: #f7f7f5;
+}
+
+.time-item.disabled .time-text,
+.time-item.disabled .time-status {
+  color: #a8a29e;
+}
+
+.time-item:active {
+  opacity: 0.85;
+}
+
+.empty-tip {
+  display: block;
+  padding: 24rpx 0 8rpx;
+  font-size: 24rpx;
+  color: #a8a29e;
+  text-align: center;
+}
+
+.inline-loading {
+  padding: 24rpx 0 8rpx;
+  text-align: center;
+}
+
+.inline-loading-text {
+  font-size: 24rpx;
+  color: #78716c;
+}
+
+/* ---------------- 选择器 ---------------- */
+.field-picker {
+  display: block;
+}
+
+.picker-row,
+.picker-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picker-row {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 8rpx;
+  background-color: #f7f7f5;
+  box-sizing: border-box;
+}
+
+.picker-value {
+  font-size: 26rpx;
+  color: #1c1917;
+}
+
+.chev {
+  width: 14rpx;
+  height: 14rpx;
+  border-right: 2rpx solid #a8a29e;
+  border-bottom: 2rpx solid #a8a29e;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* ---------------- 表单 ---------------- */
+.field {
+  margin-bottom: 24rpx;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field-label {
+  display: block;
+  font-size: 22rpx;
+  color: #78716c;
+  margin-bottom: 12rpx;
+}
+
+.field-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border: none;
+  border-radius: 8rpx;
+  background-color: #f7f7f5;
+  font-size: 26rpx;
+  color: #1c1917;
+  box-sizing: border-box;
+}
+
+.field-placeholder {
+  color: #a8a29e;
+  font-size: 26rpx;
+}
+
+.field-row {
+  display: flex;
+  gap: 24rpx;
+}
+
+.field-half {
+  flex: 1;
+  min-width: 0;
+}
+
+.symptoms-textarea {
+  width: 100%;
+  min-height: 180rpx;
+  padding: 20rpx 24rpx;
+  border: none;
+  border-radius: 8rpx;
+  background-color: #f7f7f5;
+  font-size: 26rpx;
+  color: #1c1917;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.char-count {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #a8a29e;
+  text-align: right;
+}
+
+/* ---------------- 费用 ---------------- */
+.fee-block {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
+}
+
+.fee-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0;
+}
+
+.fee-label {
+  font-size: 24rpx;
+  color: #57534e;
+}
+
+.fee-value {
+  font-size: 26rpx;
+  color: #1c1917;
+}
+
+.fee-total {
+  margin-top: 12rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0efec;
+}
+
+.total-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.total-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+/* ---------------- 按钮 ---------------- */
+.actions-block {
+  display: flex;
+  gap: 20rpx;
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0d9488;
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background-color: #0f766e;
+}
+
+.btn-primary[disabled] {
+  background-color: #ccfbf1;
+  color: #0f766e;
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #0d9488;
+  border: 1rpx solid #0d9488;
+  box-sizing: border-box;
+}
+
+.btn-secondary:active {
+  background-color: #f0fdfa;
+}
+
+.page-bottom {
+  height: calc(24rpx + env(safe-area-inset-bottom));
+}

@@ -1,0 +1,218 @@
+<!-- 预约创建页面 -->
+<view class="page">
+  <!-- 初始加载 -->
+  <view class="state-block" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="state-text">正在加载医生信息</text>
+  </view>
+
+  <view class="state-block" wx:elif="{{loadError}}">
+    <text class="state-text">医生信息加载失败，请返回后重试</text>
+    <button class="btn btn-secondary state-btn" bindtap="goBack">返回</button>
+  </view>
+
+  <block wx:else>
+    <!-- 医生信息 -->
+    <view class="block doctor-block">
+      <view class="doctor-head">
+        <image
+          wx:if="{{doctorAvatar && !avatarFailed}}"
+          class="doctor-avatar"
+          src="{{doctorAvatar}}"
+          mode="aspectFill"
+          binderror="onImageError"
+        ></image>
+        <view wx:else class="doctor-avatar avatar-fallback">医</view>
+        <view class="doctor-main">
+          <view class="doctor-line">
+            <text class="doctor-name">{{doctor.name}}</text>
+            <text class="doctor-title" wx:if="{{doctor.title}}">{{doctor.title}}</text>
+          </view>
+          <text class="doctor-meta">{{departmentName || '科室待完善'}}</text>
+          <text class="doctor-hospital">{{hospital.name || '医院信息待完善'}}</text>
+        </view>
+      </view>
+      <view class="doctor-stats">
+        <view class="stat">
+          <text class="stat-value">{{doctor.average_rating || 0}}</text>
+          <text class="stat-label">评分</text>
+        </view>
+        <view class="stat">
+          <text class="stat-value">{{doctor.appointment_count || 0}}</text>
+          <text class="stat-label">接诊</text>
+        </view>
+        <view class="stat">
+          <text class="stat-value">{{doctor.review_count || 0}}</text>
+          <text class="stat-label">评价</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 选择日期 -->
+    <view class="block">
+      <view class="block-head">
+        <text class="block-title">选择日期</text>
+        <text class="block-hint">近 7 天</text>
+      </view>
+      <scroll-view class="date-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}" enable-flex="{{true}}">
+        <view class="date-row">
+          <view
+            class="date-item {{selectedDate === item.date ? 'active' : ''}}"
+            wx:for="{{scheduleDays}}"
+            wx:key="date"
+            bindtap="selectDay"
+            data-date="{{item.date}}"
+          >
+            <text class="date-week">{{item.dayName}}</text>
+            <text class="date-num">{{item.dayNumber}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 选择时间 -->
+    <view class="block" wx:if="{{selectedDate}}">
+      <view class="block-head">
+        <text class="block-title">选择时间</text>
+        <text class="block-hint" wx:if="{{!loadingTimes && availableTimes.length > 0}}">可预约时段</text>
+      </view>
+
+      <view class="inline-loading" wx:if="{{loadingTimes}}">
+        <text class="inline-loading-text">正在查询可预约时段</text>
+      </view>
+
+      <view class="time-grid" wx:elif="{{availableTimes.length > 0}}">
+        <view
+          class="time-item {{selectedTime === item.time ? 'active' : ''}} {{!item.isAvailable ? 'disabled' : ''}}"
+          wx:for="{{availableTimes}}"
+          wx:key="scheduleId"
+          bindtap="selectTime"
+          data-time="{{item.time}}"
+          data-schedule-id="{{item.scheduleId}}"
+        >
+          <text class="time-text">{{item.time}}</text>
+          <text class="time-status" wx:if="{{item.statusText}}">{{item.statusText}}</text>
+        </view>
+      </view>
+
+      <text class="empty-tip" wx:else>该日期暂无可预约时段</text>
+    </view>
+
+    <!-- 就诊类型 -->
+    <view class="block">
+      <view class="block-head">
+        <text class="block-title">就诊类型</text>
+      </view>
+      <picker class="field-picker" range="{{appointmentTypes}}" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view class="picker-row">
+          <text class="picker-value">{{appointmentType}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 患者信息 -->
+    <view class="block">
+      <view class="block-head">
+        <text class="block-title">患者信息</text>
+      </view>
+
+      <view class="field">
+        <text class="field-label">患者姓名</text>
+        <input
+          class="field-input"
+          placeholder="请输入患者姓名"
+          placeholder-class="field-placeholder"
+          value="{{patientName}}"
+          bindinput="onInputChange"
+          data-field="patientName"
+        />
+      </view>
+
+      <view class="field">
+        <text class="field-label">联系电话</text>
+        <input
+          class="field-input"
+          placeholder="请输入手机号码"
+          placeholder-class="field-placeholder"
+          type="number"
+          maxlength="11"
+          value="{{patientPhone}}"
+          bindinput="onInputChange"
+          data-field="patientPhone"
+        />
+      </view>
+
+      <view class="field-row">
+        <view class="field field-half">
+          <text class="field-label">年龄</text>
+          <input
+            class="field-input"
+            placeholder="年龄"
+            placeholder-class="field-placeholder"
+            type="number"
+            maxlength="3"
+            value="{{patientAge}}"
+            bindinput="onInputChange"
+            data-field="patientAge"
+          />
+        </view>
+
+        <view class="field field-half">
+          <text class="field-label">性别</text>
+          <picker class="field-picker" range="{{genderOptions}}" value="{{genderIndex}}" bindchange="onGenderChange">
+            <view class="field-input picker-field">
+              <text class="{{patientGender ? 'picker-value' : 'field-placeholder'}}">{{patientGender || '请选择'}}</text>
+              <view class="chev"></view>
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- 症状描述 -->
+    <view class="block">
+      <view class="block-head">
+        <text class="block-title">症状描述</text>
+        <text class="block-hint">选填</text>
+      </view>
+      <textarea
+        class="symptoms-textarea"
+        placeholder="请简要描述您的症状，帮助医生更好地了解您的情况"
+        placeholder-class="field-placeholder"
+        value="{{description}}"
+        bindinput="onInputChange"
+        data-field="description"
+        maxlength="200"
+      ></textarea>
+      <text class="char-count">{{description.length}}/200</text>
+    </view>
+
+    <!-- 费用信息 -->
+    <view class="block fee-block">
+      <view class="fee-row">
+        <text class="fee-label">挂号费</text>
+        <text class="fee-value">¥{{doctor.consultation_fee || 0}}</text>
+      </view>
+      <view class="fee-row fee-total">
+        <text class="total-label">总计</text>
+        <text class="total-value">¥{{doctor.consultation_fee || 0}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="block actions-block">
+      <button class="btn btn-secondary" bindtap="goBack">取消</button>
+      <button
+        class="btn btn-primary"
+        bindtap="submitAppointment"
+        disabled="{{isSubmitting}}"
+        loading="{{isSubmitting}}"
+      >
+        {{isSubmitting ? '预约中' : '确认预约'}}
+      </button>
+    </view>
+
+    <view class="page-bottom"></view>
+  </block>
+</view>

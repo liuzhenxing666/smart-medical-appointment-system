@@ -1,0 +1,293 @@
+/* pages/profile/profile.wxss —— 个人中心：身份区 + 分组列表 */
+
+.page {
+  min-height: 100vh;
+  background-color: #f7f7f5;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------------- 身份区 ---------------- */
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 40rpx 32rpx;
+  background-color: #ffffff;
+}
+
+.avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background-color: #f0fdfa;
+  flex-shrink: 0;
+}
+
+.avatar-empty {
+  position: relative;
+  border: 1rpx solid #ccfbf1;
+  box-sizing: border-box;
+}
+
+.avatar-head {
+  position: absolute;
+  left: 50%;
+  top: 26rpx;
+  width: 30rpx;
+  height: 30rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.avatar-shoulder {
+  position: absolute;
+  left: 50%;
+  bottom: 20rpx;
+  width: 60rpx;
+  height: 30rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 16rpx 16rpx 0 0;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.identity-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.identity-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1917;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.identity-phone {
+  font-size: 24rpx;
+  color: #78716c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.identity-action {
+  flex-shrink: 0;
+  height: 56rpx;
+  line-height: 54rpx;
+  padding: 0 24rpx;
+  border: 1rpx solid #0d9488;
+  border-radius: 8rpx;
+  color: #0d9488;
+  font-size: 24rpx;
+  box-sizing: border-box;
+}
+
+.identity-action:active {
+  background-color: #f0fdfa;
+}
+
+/* ---------------- 数据概览 ---------------- */
+.stats {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+  padding: 28rpx 0;
+  background-color: #ffffff;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat:active {
+  opacity: 0.6;
+}
+
+.stat-num {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+.stat-line {
+  width: 1rpx;
+  height: 48rpx;
+  background-color: #f0efec;
+}
+
+/* ---------------- 未登录提示 ---------------- */
+.login-block {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-top: 12rpx;
+  padding: 40rpx 32rpx 44rpx;
+  background-color: #ffffff;
+}
+
+.login-tip {
+  font-size: 26rpx;
+  color: #78716c;
+}
+
+.btn-primary {
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0;
+  background-color: #0d9488;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 8rpx;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-primary:active {
+  background-color: #0f766e;
+}
+
+/* ---------------- 分组列表 ---------------- */
+.group {
+  margin-top: 12rpx;
+  padding: 0 32rpx;
+  background-color: #ffffff;
+}
+
+.group-title {
+  display: block;
+  padding: 26rpx 0 10rpx;
+  font-size: 24rpx;
+  color: #78716c;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 26rpx 0;
+}
+
+.row + .row {
+  border-top: 1rpx solid #f0efec;
+}
+
+.row:active {
+  opacity: 0.6;
+}
+
+.row-ico {
+  width: 44rpx;
+  height: 44rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #0f766e;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+
+.row-label {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1c1917;
+}
+
+.row-status {
+  font-size: 22rpx;
+  color: #a8a29e;
+}
+
+.row-badge {
+  padding: 2rpx 10rpx;
+  font-size: 20rpx;
+  color: #0d9488;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  border-radius: 8rpx;
+}
+
+.row-arrow {
+  font-size: 24rpx;
+  color: #a8a29e;
+}
+
+/* ---------------- 快捷服务 ---------------- */
+.quick {
+  display: flex;
+  margin-top: 12rpx;
+  padding: 36rpx 0 32rpx;
+  background-color: #ffffff;
+}
+
+.quick-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.quick-item:active {
+  opacity: 0.6;
+}
+
+.quick-ico {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: #0f766e;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+}
+
+.quick-txt {
+  font-size: 24rpx;
+  color: #57534e;
+}
+
+/* ---------------- 退出登录 ---------------- */
+.logout {
+  margin-top: 12rpx;
+  padding: 30rpx 0;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.logout:active {
+  opacity: 0.6;
+}
+
+.logout-text {
+  font-size: 28rpx;
+  color: #57534e;
+}

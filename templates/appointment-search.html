@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约挂号 - 智慧医疗预约系统</title>
+    <style>
+        /* 全局样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar-nav li {
+            margin-left: 20px;
+        }
+        
+        .navbar-nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav a:hover, .navbar-nav a.active {
+            color: white;
+        }
+        
+        /* 搜索区域样式 */
+        .search-container {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-form h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 10px 15px;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease-in-out;
+        }
+        
+        .btn-primary {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        /* 内容区域样式 */
+        .content-container {
+            display: flex;
+            margin-top: 30px;
+        }
+        
+        .sidebar {
+            flex: 0 0 25%;
+            padding-right: 20px;
+        }
+        
+        .main-content {
+            flex: 0 0 75%;
+        }
+        
+        /* 筛选区域样式 */
+        .filter-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-group h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .form-check {
+            margin-bottom: 8px;
+        }
+        
+        .form-check-input {
+            margin-right: 8px;
+        }
+        
+        /* 医生卡片样式 */
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .doctor-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 32px;
+        }
+        
+        .doctor-info {
+            flex-grow: 1;
+        }
+        
+        .doctor-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .doctor-title {
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .doctor-department {
+            color: #3498db;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .doctor-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        
+        .rating-score {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .rating-count {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .doctor-bio {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .doctor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .doctor-tag {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 12px;
+        }
+        
+        .doctor-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hospital-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .schedule-info {
+            font-size: 14px;
+            color: #28a745;
+        }
+        
+        .book-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .book-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* 分页样式 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .page-item {
+            margin: 0 5px;
+        }
+        
+        .page-link {
+            display: block;
+            padding: 8px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            color: #3498db;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        /* 无结果样式 */
+        .no-results {
+            text-align: center;
+            padding: 40px 0;
+            color: #6c757d;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #dee2e6;
+        }
+        
+        /* 加载样式 */
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.25em solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .content-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 0 0 100%;
+                padding-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .main-content {
+                flex: 0 0 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+            }
+            
+            .navbar-nav {
+                margin-top: 10px;
+            }
+            
+            .navbar-nav li {
+                margin: 0 10px;
+            }
+            
+            .doctor-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .doctor-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .doctor-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* 加载状态样式 */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.2em;
+        }
+        
+        /* 用户反馈样式 */
+        #user-feedback {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px 20px;
+            border: 1px solid transparent;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        
+        .btn-close {
+            padding: 0.75rem 1rem;
+            margin-top: -0.375rem;
+            margin-right: -0.375rem;
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border: 0;
+            border-radius: 0.375rem;
+            opacity: 0.5;
+        }
+        
+        .btn-close:hover {
+            opacity: 0.75;
+        }
+        
+        .fade {
+            transition: opacity 0.15s linear;
+        }
+        
+        .show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" href="/">
+                <span style="margin-right: 8px;">⚕</span>智能医生预约系统
+            </a>
+            <ul class="navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="/appointment-search/" class="active">预约挂号</a></li>
+                <li><a href="/appointment-list/">我的预约</a></li>
+                <li><a href="/profile/">个人中心</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 搜索区域 -->
+    <div class="search-container">
+        <div class="container">
+            <div class="search-form">
+                <h2>搜索医生</h2>
+                <form id="search-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="search-keyword" class="form-label">关键词</label>
+                            <input type="text" class="form-control" id="search-keyword" placeholder="医生姓名、疾病或症状">
+                        </div>
+                        <div class="form-group">
+                            <label for="search-hospital" class="form-label">医院</label>
+                            <select class="form-select" id="search-hospital">
+                                <option value="">全部医院</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-department" class="form-label">科室</label>
+                            <select class="form-select" id="search-department">
+                                <option value="">全部科室</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-region" class="form-label">地区</label>
+                            <select class="form-select" id="search-region">
+                                <option value="">全部地区</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <span style="margin-right: 8px;">🔍</span>搜索
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="reset-btn" style="margin-left: 10px;">
+                                <span style="margin-right: 8px;">↻</span>重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="container">
+        <div class="content-container">
+            <!-- 左侧筛选 -->
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3 class="filter-title">快速筛选</h3>
+                    <div class="filter-group">
+                        <h5>医院等级</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="三级甲等" id="level-1">
+                            <label class="form-check-label" for="level-1">
+                                三级甲等
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="三级乙等" id="level-2">
+                            <label class="form-check-label" for="level-2">
+                                三级乙等
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="二级甲等" id="level-3">
+                            <label class="form-check-label" for="level-3">
+                                二级甲等
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h5>医生职称</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="主任医师" id="title-1">
+                            <label class="form-check-label" for="title-1">
+                                主任医师
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="副主任医师" id="title-2">
+                            <label class="form-check-label" for="title-2">
+                                副主任医师
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="主治医师" id="title-3">
+                            <label class="form-check-label" for="title-3">
+                                主治医师
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧结果 -->
+            <div class="main-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>搜索结果</h3>
+                    <div>
+                        <span>排序：</span>
+                        <select class="form-select" style="width: auto; display: inline-block;">
+                            <option value="default">默认排序</option>
+                            <option value="rating">评分最高</option>
+                            <option value="distance">距离最近</option>
+                            <option value="appointment">预约最多</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 医生列表 -->
+                <div id="doctor-list">
+                    <!-- 示例医生卡片 -->
+                    <div class="doctor-card">
+                        <div class="doctor-header">
+                            <div class="doctor-avatar">
+                                <span>👨‍⚕️</span>
+                            </div>
+                            <div class="doctor-info">
+                                <h4 class="doctor-name">张医生</h4>
+                                <p class="doctor-title">主任医师</p>
+                                <p class="doctor-department">心内科</p>
+                                <div class="doctor-rating">
+                                    <span class="stars">★★★★★</span>
+                                    <span class="rating-score">4.8</span>
+                                    <span class="rating-count">(256条评价)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="doctor-bio">擅长冠心病、高血压、心律失常等心血管疾病的诊治，具有丰富的临床经验。</p>
+                        <div class="doctor-tags">
+                            <span class="doctor-tag">冠心病</span>
+                            <span class="doctor-tag">高血压</span>
+                            <span class="doctor-tag">心律失常</span>
+                        </div>
+                        <div class="doctor-actions">
+                            <div>
+                                <p class="hospital-info">北京协和医院</p>
+                                <p class="schedule-info">可预约时间：周三上午</p>
+                            </div>
+                            <button class="book-btn">预约挂号</button>
+                        </div>
+                    </div>
+
+                    <!-- 更多医生卡片 -->
+                    <div class="doctor-card">
+                        <div class="doctor-header">
+                            <div class="doctor-avatar">
+                                <span>👩‍⚕️</span>
+                            </div>
+                            <div class="doctor-info">
+                                <h4 class="doctor-name">李医生</h4>
+                                <p class="doctor-title">副主任医师</p>
+                                <p class="doctor-department">神经内科</p>
+                                <div class="doctor-rating">
+                                    <span class="stars">★★★★☆</span>
+                                    <span class="rating-score">4.6</span>
+                                    <span class="rating-count">(189条评价)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="doctor-bio">擅长脑血管疾病、癫痫、帕金森病等神经系统疾病的诊断和治疗。</p>
+                        <div class="doctor-tags">
+                            <span class="doctor-tag">脑血管病</span>
+                            <span class="doctor-tag">癫痫</span>
+                            <span class="doctor-tag">帕金森病</span>
+                        </div>
+                        <div class="doctor-actions">
+                            <div>
+                                <p class="hospital-info">北京大学第一医院</p>
+                                <p class="schedule-info">可预约时间：周一、周四上午</p>
+                            </div>
+                            <button class="book-btn">预约挂号</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination-container">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">«</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">»</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能实现
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            performSearch();
+        });
+
+        // 重置功能
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            document.getElementById('search-keyword').value = '';
+            document.getElementById('search-hospital').selectedIndex = 0;
+            document.getElementById('search-department').selectedIndex = 0;
+            document.getElementById('search-region').selectedIndex = 0;
+            
+            // 重置筛选条件
+            document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // 重置排序
+            document.querySelector('.form-select').selectedIndex = 0;
+            
+            // 清空搜索结果
+            document.getElementById('doctor-list').innerHTML = '<p class="no-results">请输入搜索条件...</p>';
+        });
+
+        // 预约按钮点击事件
+        document.querySelectorAll('.book-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const doctorId = this.getAttribute('data-doctor-id');
+                const doctorName = this.closest('.doctor-card').querySelector('.doctor-name').textContent;
+                alert(`即将预约 ${doctorName} 医生`);
+                // 跳转到预约页面
+                window.location.href = doctorId
+                    ? `/appointment-booking/?doctor=${doctorId}`
+                    : '/appointment-booking/';
+            });
+        });
+
+        // 筛选功能
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                performSearch();
+            });
+        });
+
+        // 排序功能
+        document.querySelector('.form-select').addEventListener('change', function() {
+            performSearch();
+        });
+
+        // 搜索函数
+        function performSearch() {
+            try {
+                // 显示加载状态
+                showLoadingState();
+                
+                const keyword = document.getElementById('search-keyword').value;
+                const hospital = document.getElementById('search-hospital').value;
+                const department = document.getElementById('search-department').value;
+                const region = document.getElementById('search-region').value;
+                const sortBy = document.querySelector('.form-select').value;
+                
+                // 获取筛选条件
+                const hospitalLevels = [];
+                const doctorTitles = [];
+                
+                document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                    if (checkbox.checked) {
+                        if (checkbox.id.startsWith('level-')) {
+                            hospitalLevels.push(checkbox.value);
+                        } else if (checkbox.id.startsWith('title-')) {
+                            doctorTitles.push(checkbox.value);
+                        }
+                    }
+                });
+                
+                // 验证搜索条件
+                if (!keyword && !hospital && !department && !region && 
+                    hospitalLevels.length === 0 && doctorTitles.length === 0) {
+                    showUserFeedback('请输入至少一个搜索条件', 'warning');
+                    hideLoadingState();
+                    return;
+                }
+                
+                // 构建搜索参数
+                const searchParams = new URLSearchParams();
+                
+                if (keyword) searchParams.append('q', keyword);
+                if (hospital) searchParams.append('hospital_id', hospital);
+                if (department) searchParams.append('department_id', department);
+                if (region) searchParams.append('city', region);
+                
+                if (hospitalLevels.length > 0) {
+                    searchParams.append('hospital_level', hospitalLevels.join(','));
+                }
+                
+                if (doctorTitles.length > 0) {
+                    searchParams.append('doctor_title', doctorTitles.join(','));
+                }
+                
+                // 设置排序
+                if (sortBy === 'rating') {
+                    searchParams.append('sort_by', 'rating');
+                    searchParams.append('sort_order', 'desc');
+                } else if (sortBy === 'distance') {
+                    searchParams.append('sort_by', 'name');
+                    searchParams.append('sort_order', 'asc');
+                } else if (sortBy === 'appointment') {
+                    searchParams.append('sort_by', 'appointment_count');
+                    searchParams.append('sort_order', 'desc');
+                }
+                
+                // 模拟API调用
+                console.log('搜索参数:', searchParams.toString());
+                
+                // 模拟搜索结果
+                simulateSearchResults(searchParams);
+                
+            } catch (error) {
+                console.error('搜索过程中发生错误:', error);
+                showUserFeedback('搜索过程中发生错误，请稍后重试', 'error');
+                hideLoadingState();
+            }
+        }
+
+        // 模拟搜索结果
+        function simulateSearchResults(params) {
+            const doctorList = document.getElementById('doctor-list');
+            
+            // 模拟加载中
+            doctorList.innerHTML = '<div class="loading">搜索中...</div>';
+            
+            // 模拟API延迟
+            setTimeout(() => {
+                try {
+                    // 模拟搜索结果数据
+                    const mockDoctors = [
+                        {
+                            id: 1,
+                            name: '张医生',
+                            title: '主任医师',
+                            department: '心内科',
+                            rating: 4.8,
+                            reviewCount: 256,
+                            bio: '擅长冠心病、高血压、心律失常等心血管疾病的诊治，具有丰富的临床经验。',
+                            tags: ['冠心病', '高血压', '心律失常'],
+                            hospital: '北京协和医院',
+                            schedule: '周三上午',
+                            fee: 200
+                        },
+                        {
+                            id: 2,
+                            name: '李医生',
+                            title: '副主任医师',
+                            department: '神经内科',
+                            rating: 4.6,
+                            reviewCount: 189,
+                            bio: '擅长脑血管疾病、癫痫、帕金森病等神经系统疾病的诊断和治疗。',
+                            tags: ['脑血管病', '癫痫', '帕金森病'],
+                            hospital: '北京大学第一医院',
+                            schedule: '周一、周四上午',
+                            fee: 150
+                        },
+                        {
+                            id: 3,
+                            name: '王医生',
+                            title: '主治医师',
+                            department: '呼吸内科',
+                            rating: 4.4,
+                            reviewCount: 120,
+                            bio: '擅长呼吸系统常见病、多发病的诊治，对哮喘、慢阻肺等有深入研究。',
+                            tags: ['哮喘', '慢阻肺', '肺炎'],
+                            hospital: '北京朝阳医院',
+                            schedule: '周二、周五全天',
+                            fee: 100
+                        }
+                    ];
+                    
+                    // 根据搜索条件过滤结果
+                    const filteredDoctors = mockDoctors.filter(doctor => {
+                        const keyword = params.get('q');
+                        if (keyword && !doctor.name.includes(keyword) && !doctor.bio.includes(keyword)) {
+                            return false;
+                        }
+                        
+                        const hospitalLevel = params.get('hospital_level');
+                        if (hospitalLevel && !hospitalLevel.includes('三级')) {
+                            // 模拟医院等级筛选
+                            return false;
+                        }
+                        
+                        const doctorTitle = params.get('doctor_title');
+                        if (doctorTitle && !doctorTitle.includes(doctor.title)) {
+                            return false;
+                        }
+                        
+                        return true;
+                    });
+                    
+                    // 渲染结果
+                    if (filteredDoctors.length === 0) {
+                        doctorList.innerHTML = '<p class="no-results">未找到符合条件的医生</p>';
+                        showUserFeedback('未找到符合条件的医生，请尝试调整搜索条件', 'info');
+                    } else {
+                        doctorList.innerHTML = filteredDoctors.map(doctor => `
+                            <div class="doctor-card">
+                                <div class="doctor-header">
+                                    <div class="doctor-avatar">
+                                        <span>👨‍⚕️</span>
+                                    </div>
+                                    <div class="doctor-info">
+                                        <h4 class="doctor-name">${doctor.name}</h4>
+                                        <p class="doctor-title">${doctor.title}</p>
+                                        <p class="doctor-department">${doctor.department}</p>
+                                        <div class="doctor-rating">
+                                            <span class="stars">${'★'.repeat(Math.floor(doctor.rating))}${doctor.rating % 1 >= 0.5 ? '☆' : ''}</span>
+                                            <span class="rating-score">${doctor.rating}</span>
+                                            <span class="rating-count">(${doctor.reviewCount}条评价)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="doctor-bio">${doctor.bio}</p>
+                                <div class="doctor-tags">
+                                    ${doctor.tags.map(tag => `<span class="doctor-tag">${tag}</span>`).join('')}
+                                </div>
+                                <div class="doctor-actions">
+                                    <div>
+                                        <p class="hospital-info">${doctor.hospital}</p>
+                                        <p class="schedule-info">可预约时间：${doctor.schedule}</p>
+                                        <p class="fee-info">咨询费：¥${doctor.fee}</p>
+                                    </div>
+                                    <button class="book-btn" data-doctor-id="${doctor.id}">预约挂号</button>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        // 重新绑定预约按钮事件
+                        document.querySelectorAll('.book-btn').forEach(button => {
+                            button.addEventListener('click', function() {
+                                const doctorId = this.getAttribute('data-doctor-id');
+                                const doctorName = this.closest('.doctor-card').querySelector('.doctor-name').textContent;
+                                alert(`即将预约 ${doctorName} 医生 (ID: ${doctorId})`);
+                                window.location.href = `/appointment-booking/?doctor=${doctorId}`;
+                            });
+                        });
+                        
+                        showUserFeedback(`找到 ${filteredDoctors.length} 位符合条件的医生`, 'success');
+                    }
+                    
+                    // 显示搜索结果统计
+                    const resultCount = document.createElement('div');
+                    resultCount.className = 'result-count';
+                    resultCount.innerHTML = `<p>找到 ${filteredDoctors.length} 位医生</p>`;
+                    doctorList.insertBefore(resultCount, doctorList.firstChild);
+                    
+                } catch (error) {
+                    console.error('搜索结果处理错误:', error);
+                    doctorList.innerHTML = '<p class="no-results">搜索结果处理失败，请稍后重试</p>';
+                    showUserFeedback('搜索结果处理失败，请稍后重试', 'error');
+                }
+                
+                // 隐藏加载状态
+                hideLoadingState();
+                
+            }, 1000); // 1秒延迟模拟网络请求
+        }
+        
+        // 显示加载状态
+        function showLoadingState() {
+            const searchBtn = document.querySelector('#search-form button[type="submit"]');
+            const originalText = searchBtn.textContent;
+            searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 搜索中...';
+            searchBtn.disabled = true;
+            searchBtn.setAttribute('data-original-text', originalText);
+        }
+        
+        // 隐藏加载状态
+        function hideLoadingState() {
+            const searchBtn = document.querySelector('#search-form button[type="submit"]');
+            const originalText = searchBtn.getAttribute('data-original-text');
+            if (originalText) {
+                searchBtn.textContent = originalText;
+            }
+            searchBtn.disabled = false;
+        }
+        
+        // 显示用户反馈
+        function showUserFeedback(message, type = 'info') {
+            // 移除现有的反馈消息
+            const existingFeedback = document.getElementById('user-feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
+            // 创建新的反馈消息
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.id = 'user-feedback';
+            feedbackDiv.className = `alert alert-${getAlertType(type)} alert-dismissible fade show`;
+            feedbackDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // 插入到搜索表单上方
+            const searchForm = document.getElementById('search-form');
+            searchForm.parentNode.insertBefore(feedbackDiv, searchForm);
+            
+            // 5秒后自动消失
+            setTimeout(() => {
+                if (feedbackDiv.parentNode) {
+                    feedbackDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        // 获取Alert类型
+        function getAlertType(type) {
+            const typeMap = {
+                'success': 'success',
+                'error': 'danger',
+                'warning': 'warning',
+                'info': 'info'
+            };
+            return typeMap[type] || 'info';
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化搜索表单
+            document.getElementById('doctor-list').innerHTML = '<p class="no-results">请输入搜索条件...</p>';
+            
+            // 模拟加载医院和科室数据
+            loadHospitalData();
+            loadDepartmentData();
+            loadRegionData();
+        });
+
+        // 模拟加载医院数据
+        function loadHospitalData() {
+            const mockHospitals = [
+                { id: 1, name: '北京协和医院' },
+                { id: 2, name: '北京大学第一医院' },
+                { id: 3, name: '北京朝阳医院' },
+                { id: 4, name: '北京天坛医院' },
+                { id: 5, name: '北京同仁医院' }
+            ];
+            
+            const hospitalSelect = document.getElementById('search-hospital');
+            mockHospitals.forEach(hospital => {
+                const option = document.createElement('option');
+                option.value = hospital.id;
+                option.textContent = hospital.name;
+                hospitalSelect.appendChild(option);
+            });
+        }
+
+        // 模拟加载科室数据
+        function loadDepartmentData() {
+            const mockDepartments = [
+                { id: 1, name: '心内科' },
+                { id: 2, name: '神经内科' },
+                { id: 3, name: '呼吸内科' },
+                { id: 4, name: '消化内科' },
+                { id: 5, name: '骨科' },
+                { id: 6, name: '妇产科' },
+                { id: 7, name: '儿科' }
+            ];
+            
+            const departmentSelect = document.getElementById('search-department');
+            mockDepartments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.id;
+                option.textContent = dept.name;
+                departmentSelect.appendChild(option);
+            });
+        }
+
+        // 模拟加载地区数据
+        function loadRegionData() {
+            const mockRegions = [
+                '北京市',
+                '上海市', 
+                '广州市',
+                '深圳市',
+                '杭州市',
+                '成都市',
+                '武汉市'
+            ];
+            
+            const regionSelect = document.getElementById('search-region');
+            mockRegions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region;
+                option.textContent = region;
+                regionSelect.appendChild(option);
+            });
+        }
+    </script>
+</body>
+</html>

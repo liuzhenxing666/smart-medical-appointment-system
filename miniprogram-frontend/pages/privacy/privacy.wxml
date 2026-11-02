@@ -1,0 +1,48 @@
+<!-- 隐私政策页面 -->
+<view class="doc-page">
+  <scroll-view class="doc-scroll" scroll-y>
+    <view class="doc-section">
+      <text class="doc-title">一、信息收集</text>
+      <text class="doc-text">我们收集的信息包括：
+· 手机号码：用于账号注册和登录
+· 健康信息：用于提供个性化医疗服务
+· 位置信息：用于推荐附近的医疗机构
+· 设备信息：用于优化用户体验</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">二、信息使用</text>
+      <text class="doc-text">我们使用收集的信息用于：
+· 提供医疗预约服务
+· 个性化推荐
+· 服务优化和改进
+· 安全保障</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">三、信息共享</text>
+      <text class="doc-text">我们承诺不会将您的个人信息出售给第三方。仅在以下情况下会共享信息：
+· 获得您的明确同意
+· 法律法规要求
+· 保护用户和公众的安全</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">四、信息安全</text>
+      <text class="doc-text">我们采取严格的安全措施保护您的个人信息，包括数据加密、访问控制等技术手段。</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">五、用户权利</text>
+      <text class="doc-text">您有权：
+· 访问和修改个人信息
+· 删除账号
+· 撤回同意
+· 投诉和建议</text>
+    </view>
+  </scroll-view>
+
+  <view class="doc-footer">
+    <view class="doc-btn" bindtap="agreeAndBack">同意并返回</view>
+  </view>
+</view>

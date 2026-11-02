@@ -1,0 +1,538 @@
+/* pages/index/index.wxss —— 首页：海报式 Hero + 区块式布局 */
+
+/* 页面容器 */
+.page {
+  min-height: 100vh;
+  background-color: #f7f7f5;
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------------- Hero ---------------- */
+.hero {
+  background-color: #0f766e;
+  padding: 24rpx 32rpx 40rpx;
+}
+
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0 32rpx;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.brand-mark {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background-color: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.brand-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 2rpx;
+}
+
+.brand-sub {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.city {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 8rpx;
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.city-name {
+  font-size: 24rpx;
+  color: #ffffff;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.city-arrow {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  height: 88rpx;
+  padding: 0 28rpx;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+}
+
+.search-ico {
+  font-size: 32rpx;
+  color: #0d9488;
+}
+
+.search-ph {
+  font-size: 26rpx;
+  color: #a8a29e;
+}
+
+/* ---------------- 主视觉轮播 ---------------- */
+.banner {
+  width: 100%;
+  height: 340rpx;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------- 快捷入口 ---------------- */
+.quick {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 40rpx 32rpx 36rpx;
+  margin-top: 12rpx;
+}
+
+.quick-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+}
+
+/* 快捷入口图标：纯 CSS 绘制，不依赖位图 */
+.qi-icon {
+  position: relative;
+  width: 52rpx;
+  height: 52rpx;
+  box-sizing: border-box;
+}
+
+/* 医院：圆角方框 + 十字 */
+.qi-hospital {
+  border: 2rpx solid #0d9488;
+  border-radius: 10rpx;
+}
+
+.qi-cross-h {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22rpx;
+  height: 4rpx;
+  background-color: #0d9488;
+  transform: translate(-50%, -50%);
+}
+
+.qi-cross-v {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4rpx;
+  height: 22rpx;
+  background-color: #0d9488;
+  transform: translate(-50%, -50%);
+}
+
+/* 医生：头 + 肩 */
+.qi-head {
+  position: absolute;
+  left: 50%;
+  top: 3rpx;
+  width: 18rpx;
+  height: 18rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.qi-shoulder {
+  position: absolute;
+  left: 50%;
+  bottom: 3rpx;
+  width: 38rpx;
+  height: 20rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 20rpx 20rpx 6rpx 6rpx;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+/* 日历：外框 + 顶线 + 日期格 */
+.qi-calendar {
+  border: 2rpx solid #0d9488;
+  border-radius: 8rpx;
+}
+
+.qi-cal-bar {
+  position: absolute;
+  left: 0;
+  top: 10rpx;
+  width: 100%;
+  height: 2rpx;
+  background-color: #0d9488;
+}
+
+.qi-cal-dot {
+  position: absolute;
+  left: 50%;
+  bottom: 8rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 3rpx;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.tcm-badge {
+  width: 52rpx;
+  height: 52rpx;
+  border: 2rpx solid #0d9488;
+  border-radius: 12rpx;
+  color: #0d9488;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.quick-txt {
+  font-size: 24rpx;
+  color: #44403c;
+}
+
+.quick-item:active {
+  opacity: 0.6;
+}
+
+/* ---------------- 区块通用 ---------------- */
+.section {
+  background-color: #ffffff;
+  padding: 36rpx 32rpx 40rpx;
+  margin-top: 12rpx;
+  animation: rise 0.45s ease both;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 28rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1917;
+  letter-spacing: 1rpx;
+}
+
+.section-more {
+  font-size: 24rpx;
+  color: #0d9488;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- 中医特色 ---------------- */
+.tcm-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tcm-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  box-sizing: border-box;
+}
+
+.tcm-item:active {
+  opacity: 0.6;
+}
+
+.tcm-ico-text {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  color: #0f766e;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.tcm-name {
+  font-size: 24rpx;
+  color: #44403c;
+}
+
+/* ---------------- 热门医院 ---------------- */
+.h-scroll {
+  white-space: nowrap;
+}
+
+.h-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 320rpx;
+  margin-right: 20rpx;
+  vertical-align: top;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background-color: #f7f7f5;
+}
+
+.h-card:last-child {
+  margin-right: 0;
+}
+
+.h-card:active {
+  opacity: 0.75;
+}
+
+.h-img {
+  width: 100%;
+  height: 200rpx;
+  display: block;
+  background-color: #e7e5e4;
+}
+
+.h-body {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.h-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1c1917;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.h-meta {
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+/* ---------------- 推荐医生 ---------------- */
+.d-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f0efec;
+}
+
+.d-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.d-row:first-child {
+  padding-top: 0;
+}
+
+.d-row:active {
+  opacity: 0.75;
+}
+
+.d-avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #e7e5e4;
+}
+
+.d-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.d-line1 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.d-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.d-title {
+  font-size: 22rpx;
+  color: #0d9488;
+  border: 1rpx solid #ccfbf1;
+  background-color: #f0fdfa;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.d-meta {
+  font-size: 23rpx;
+  color: #78716c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.d-tag {
+  font-size: 20rpx;
+  color: #57534e;
+  background-color: #f5f5f4;
+  border-radius: 4rpx;
+  padding: 4rpx 10rpx;
+}
+
+.d-btn {
+  flex-shrink: 0;
+  min-width: 112rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #ffffff;
+  background-color: #0d9488;
+  border-radius: 8rpx;
+}
+
+.d-btn:active {
+  background-color: #0f766e;
+}
+
+/* ---------------- 健康资讯 ---------------- */
+.a-row {
+  display: flex;
+  gap: 24rpx;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f0efec;
+}
+
+.a-row:first-child {
+  padding-top: 0;
+}
+
+.a-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.a-row:active {
+  opacity: 0.75;
+}
+
+.a-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.a-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1c1917;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.a-desc {
+  font-size: 23rpx;
+  color: #78716c;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.a-date {
+  font-size: 21rpx;
+  color: #a8a29e;
+}
+
+.a-img {
+  width: 200rpx;
+  height: 140rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+  background-color: #e7e5e4;
+}
+
+/* ---------------- 页尾 ---------------- */
+.page-end {
+  padding: 48rpx 0 24rpx;
+  text-align: center;
+}
+
+.page-end-txt {
+  font-size: 22rpx;
+  color: #a8a29e;
+}

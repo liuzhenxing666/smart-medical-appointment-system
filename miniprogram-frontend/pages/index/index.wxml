@@ -1,0 +1,134 @@
+<!-- pages/index/index.wxml -->
+<view class="page">
+  <!-- Hero：品牌 + 定位 + 搜索 -->
+  <view class="hero">
+    <view class="hero-top">
+      <view class="brand">
+        <view class="brand-mark">医</view>
+        <view class="brand-text">
+          <text class="brand-name">智慧医疗</text>
+          <text class="brand-sub">预约挂号 · 在线问诊</text>
+        </view>
+      </view>
+      <view class="city" bindtap="chooseLocation">
+        <text class="city-name">{{currentLocation}}</text>
+        <text class="city-arrow">▾</text>
+      </view>
+    </view>
+    <view class="search" bindtap="goToSearch">
+      <text class="search-ico">⌕</text>
+      <text class="search-ph">搜索医院、科室、医生</text>
+    </view>
+  </view>
+
+  <!-- 主视觉轮播 -->
+  <swiper class="banner" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{5000}}" duration="{{500}}" circular="{{true}}" indicator-color="rgba(255,255,255,0.45)" indicator-active-color="#ffffff">
+    <block wx:for="{{banners}}" wx:key="id">
+      <swiper-item>
+        <image class="banner-img" src="{{item.image}}" mode="aspectFill" bindtap="onBannerTap" data-id="{{item.id}}" lazy-load="{{true}}"></image>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <!-- 快捷入口 -->
+  <view class="quick">
+    <view class="quick-item" bindtap="goToPage" data-page="hospitals">
+      <view class="qi-icon qi-hospital">
+        <view class="qi-cross-h"></view>
+        <view class="qi-cross-v"></view>
+      </view>
+      <text class="quick-txt">附近医院</text>
+    </view>
+    <view class="quick-item" bindtap="goToPage" data-page="doctors">
+      <view class="qi-icon qi-doctor">
+        <view class="qi-head"></view>
+        <view class="qi-shoulder"></view>
+      </view>
+      <text class="quick-txt">找医生</text>
+    </view>
+    <view class="quick-item" bindtap="goToPage" data-page="appointments">
+      <view class="qi-icon qi-calendar">
+        <view class="qi-cal-bar"></view>
+        <view class="qi-cal-dot"></view>
+      </view>
+      <text class="quick-txt">我的预约</text>
+    </view>
+    <view class="quick-item" bindtap="goToTCM">
+      <view class="tcm-badge">中</view>
+      <text class="quick-txt">中医服务</text>
+    </view>
+  </view>
+
+  <!-- 中医特色 -->
+  <view class="section" id="tcm">
+    <view class="section-head">
+      <text class="section-title">中医特色</text>
+      <text class="section-more" bindtap="goToTCM">全部</text>
+    </view>
+    <view class="tcm-grid">
+      <view class="tcm-item" wx:for="{{tcmServices}}" wx:key="id" bindtap="goToService" data-id="{{item.id}}">
+        <view class="tcm-ico-text">{{item.short}}</view>
+        <text class="tcm-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门医院 -->
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">热门医院</text>
+      <text class="section-more" bindtap="goToHospitals">查看全部</text>
+    </view>
+    <scroll-view class="h-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="h-card" wx:for="{{hotHospitals}}" wx:key="id" bindtap="goToHospitalDetail" data-id="{{item.id}}">
+        <image class="h-img" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
+        <view class="h-body">
+          <text class="h-name">{{item.name}}</text>
+          <text class="h-meta">{{item.level}}{{item.distance ? ' · ' + item.distance : ''}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 推荐医生 -->
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">推荐医生</text>
+      <text class="section-more" bindtap="goToDoctors">查看全部</text>
+    </view>
+    <view class="d-row" wx:for="{{recommendDoctors}}" wx:key="id" bindtap="goToDoctorDetail" data-id="{{item.id}}">
+      <image class="d-avatar" src="{{item.avatar}}" mode="aspectFill" lazy-load="{{true}}"></image>
+      <view class="d-main">
+        <view class="d-line1">
+          <text class="d-name">{{item.name}}</text>
+          <text class="d-title">{{item.title}}</text>
+        </view>
+        <text class="d-meta">{{item.hospital}} · {{item.department}}</text>
+        <view class="d-tags">
+          <text class="d-tag" wx:for="{{item.specialties}}" wx:key="*this" wx:for-item="specialty">{{specialty}}</text>
+        </view>
+      </view>
+      <view class="d-btn" catchtap="quickAppointment" data-id="{{item.id}}">预约</view>
+    </view>
+  </view>
+
+  <!-- 健康资讯 -->
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">健康资讯</text>
+      <text class="section-more" bindtap="goToArticles">更多</text>
+    </view>
+    <view class="a-row" wx:for="{{healthArticles}}" wx:key="id" bindtap="goToArticle" data-id="{{item.id}}">
+      <view class="a-main">
+        <text class="a-title">{{item.title}}</text>
+        <text class="a-desc">{{item.description}}</text>
+        <text class="a-date">{{item.publishDate}}</text>
+      </view>
+      <image class="a-img" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
+    </view>
+  </view>
+
+  <view class="page-end">
+    <text class="page-end-txt">已经到底了</text>
+  </view>
+</view>

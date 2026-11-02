@@ -1,0 +1,5 @@
+<!-- 这是一个占位SVG，实际项目中应使用真实的图标 -->
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="16" r="10" stroke="#666" stroke-width="2"/>
+  <path d="M16 11V21M11 16H21" stroke="#666" stroke-width="2" stroke-linecap="round"/>
+</svg>

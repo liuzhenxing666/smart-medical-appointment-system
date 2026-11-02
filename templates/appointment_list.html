@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的预约 - 智能医生预约系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background-color: #1976d2;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin-left: auto;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .appointments-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            padding: 0.75rem 0;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "▶";
+            padding: 0 0.5rem;
+            color: #6c757d;
+        }
+        
+        .breadcrumb-item a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item.active {
+            color: #6c757d;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            color: #6c757d;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .tab-content {
+            margin-top: 1rem;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .filter-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-item label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .form-select, .form-control {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            min-width: 150px;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-box input {
+            padding-left: 2.5rem;
+            width: 100%;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .appointment-card {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+        
+        .appointment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .appointment-header {
+            background-color: #f8f9fa;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .appointment-body {
+            padding: 1.25rem;
+        }
+        
+        .doctor-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .doctor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+        
+        .doctor-details {
+            flex: 1;
+        }
+        
+        .doctor-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .hospital-info, .department-info {
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 0.125rem;
+        }
+        
+        .appointment-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .info-item::before {
+            content: "●";
+            margin-right: 0.5rem;
+            color: #1976d2;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-outline-primary {
+            border: 1px solid #1976d2;
+            color: #1976d2;
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .btn-outline-danger {
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+        
+        .page-item {
+            display: inline-block;
+        }
+        
+        .page-link {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            color: #1976d2;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #1976d2;
+            border-color: #1976d2;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.25rem;
+            color: #666;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .empty-state p {
+            margin-bottom: 1.25rem;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 2.5rem 1.25rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1976d2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.25rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .toast-success {
+            background-color: #4caf50;
+        }
+        
+        .toast-error {
+            background-color: #f44336;
+        }
+        
+        .toast-warning {
+            background-color: #ff9800;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .doctor-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .doctor-avatar {
+                align-self: center;
+            }
+            
+            .appointment-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-item select,
+            .filter-item input {
+                width: 100%;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span style="margin-right: 0.5rem;">🏥</span>智能医生预约系统
+            </a>
+            <ul class="navbar-nav">
+                <li><a class="nav-link" href="/">首页</a></li>
+                <li><a class="nav-link" href="/appointment-search/">预约挂号</a></li>
+                <li><a class="nav-link active" href="/appointment-list/">我的预约</a></li>
+                <li><a class="nav-link" href="/profile/">个人中心</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="appointments-container">
+        <!-- 面包屑导航 -->
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">首页</a></li>
+            <li class="breadcrumb-item active">我的预约</li>
+        </ul>
+
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <h2 class="page-title">我的预约</h2>
+            <a href="/doctors/" class="btn btn-primary">
+                <span style="margin-right: 0.5rem;">➕</span> 新增预约
+            </a>
+        </div>
+
+        <!-- 筛选标签页 -->
+        <ul class="filter-tabs" id="appointmentTabs">
+            <li>
+                <button class="tab-btn active" data-tab="upcoming">即将就诊</button>
+            </li>
+            <li>
+                <button class="tab-btn" data-tab="history">历史预约</button>
+            </li>
+        </ul>
+
+        <!-- 筛选条件 -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <label for="hospital-filter">医院:</label>
+                    <select class="form-select" id="hospital-filter">
+                        <option value="">全部医院</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="department-filter">科室:</label>
+                    <select class="form-select" id="department-filter">
+                        <option value="">全部科室</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="status-filter">状态:</label>
+                    <select class="form-select" id="status-filter">
+                        <option value="">全部状态</option>
+                        <option value="pending">待确认</option>
+                        <option value="confirmed">已确认</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="搜索医生姓名或医院名称">
+                </div>
+            </div>
+        </div>
+
+        <!-- 预约列表内容 -->
+        <div class="tab-content" id="appointmentTabsContent">
+            <!-- 即将就诊 -->
+            <div class="tab-pane active" id="upcoming" data-tab="upcoming">
+                <div id="upcomingAppointmentsContainer">
+                    <!-- 即将就诊的预约将通过JavaScript动态加载 -->
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>加载预约列表中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 历史预约 -->
+            <div class="tab-pane" id="history" data-tab="history">
+                <div id="historyAppointmentsContainer">
+                    <!-- 历史预约将通过JavaScript动态加载 -->
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>加载历史预约中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination-container">
+            <nav aria-label="预约列表分页">
+                <ul class="pagination" id="appointmentsPagination">
+                    <!-- 分页按钮将通过JavaScript动态生成 -->
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 智能医生预约系统. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 标签页切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化筛选器选项
+            initializeFilters();
+            
+            // 标签页切换
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // 移除所有激活状态
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    
+                    // 激活当前标签页
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                    
+                    // 加载对应标签页的数据
+                    loadAppointments(targetTab);
+                });
+            });
+            
+            // 筛选条件变化监听
+            const filters = ['hospitalFilter', 'departmentFilter', 'statusFilter', 'searchInput'];
+            filters.forEach(filterId => {
+                const filterElement = document.getElementById(filterId);
+                if (filterElement) {
+                    filterElement.addEventListener('change', function() {
+                        const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+                        loadAppointments(activeTab);
+                    });
+                }
+            });
+            
+            // 初始加载数据
+            loadAppointments('upcoming');
+        });
+        
+        // 初始化筛选器选项
+         function initializeFilters() {
+             // 医院筛选器选项
+             const hospitalFilter = document.getElementById('hospital-filter');
+             const hospitals = ['全部医院', '北京协和医院', '北京大学第一医院', '上海瑞金医院', '广州中山医院', '华西医院'];
+             
+             hospitals.forEach(hospital => {
+                 const option = document.createElement('option');
+                 option.value = hospital === '全部医院' ? '' : hospital;
+                 option.textContent = hospital;
+                 hospitalFilter.appendChild(option);
+             });
+             
+             // 科室筛选器选项
+             const departmentFilter = document.getElementById('department-filter');
+             const departments = ['全部科室', '内科', '外科', '儿科', '妇产科', '眼科', '耳鼻喉科', '口腔科', '皮肤科', '中医科'];
+             
+             departments.forEach(department => {
+                 const option = document.createElement('option');
+                 option.value = department === '全部科室' ? '' : department;
+                 option.textContent = department;
+                 departmentFilter.appendChild(option);
+             });
+             
+             // 状态筛选器选项
+             const statusFilter = document.getElementById('status-filter');
+             const statuses = [
+                 {value: '', text: '全部状态'},
+                 {value: 'pending', text: '待就诊'},
+                 {value: 'confirmed', text: '已确认'},
+                 {value: 'completed', text: '已完成'},
+                 {value: 'cancelled', text: '已取消'}
+             ];
+             
+             statuses.forEach(status => {
+                 const option = document.createElement('option');
+                 option.value = status.value;
+                 option.textContent = status.text;
+                 statusFilter.appendChild(option);
+             });
+         }
+        
+        // 加载预约数据
+        function loadAppointments(tabType) {
+            const containerId = tabType === 'upcoming' ? 'upcomingAppointmentsContainer' : 'historyAppointmentsContainer';
+            const container = document.getElementById(containerId);
+            
+            // 显示加载状态
+            container.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>加载${tabType === 'upcoming' ? '预约列表' : '历史预约'}中...</p>
+                </div>
+            `;
+            
+            // 获取筛选条件
+            const hospitalFilter = document.getElementById('hospital-filter').value;
+            const departmentFilter = document.getElementById('department-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const searchInput = document.getElementById('searchInput').value;
+            
+            // 构建API请求参数
+            const params = new URLSearchParams({
+                tab: tabType,
+                page: 1,
+                page_size: 10
+            });
+            
+            if (hospitalFilter) params.append('hospital', hospitalFilter);
+            if (departmentFilter) params.append('department', departmentFilter);
+            if (statusFilter) params.append('status', statusFilter);
+            if (searchInput) params.append('search', searchInput);
+            
+            // 调用演示API（不需要认证）
+            fetch(`/api/appointments/demo-data/?${params}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 处理APIResponse格式
+                    const apiData = data.data || data;
+                    const appointments = apiData.results || apiData;
+                    
+                    if (!Array.isArray(appointments)) {
+                        throw new Error('API返回的数据格式不正确');
+                    }
+                    
+                    renderAppointments(container, appointments, tabType);
+                    updatePagination(data.current_page, data.total_pages);
+                })
+                .catch(error => {
+                    console.error('加载预约数据失败:', error);
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">❌</div>
+                            <h3>加载失败</h3>
+                            <p>无法加载预约数据，请稍后重试</p>
+                            <button class="btn btn-primary" onclick="loadAppointments('${tabType}')">重新加载</button>
+                        </div>
+                    `;
+                    showToast('加载预约数据失败，请检查网络连接', 'error');
+                });
+        }
+        
+        // 渲染预约列表
+        function renderAppointments(container, appointments, tabType) {
+            if (!appointments || appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h3>暂无预约记录</h3>
+                        <p>您还没有${tabType === 'upcoming' ? '即将就诊' : '历史'}的预约记录</p>
+                        <a href="/doctors/" class="btn btn-primary">立即预约</a>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = appointments.map(appointment => `
+                    <div class="appointment-card">
+                        <div class="appointment-header">
+                            <span class="status-badge status-${appointment.status}">${appointment.statusText || appointment.status}</span>
+                            <span>预约号: ${appointment.id}</span>
+                        </div>
+                        <div class="appointment-body">
+                            <div class="doctor-info">
+                                <div class="doctor-avatar">👨‍⚕️</div>
+                                <div class="doctor-details">
+                                    <div class="doctor-name">${appointment.doctorName || appointment.doctor?.name || '未知医生'}</div>
+                                    <div class="hospital-info">${appointment.hospital || appointment.doctor?.hospital || '未知医院'}</div>
+                                    <div class="department-info">${appointment.department || appointment.doctor?.department || '未知科室'}</div>
+                                </div>
+                            </div>
+                            <div class="appointment-info">
+                                <div class="info-item">就诊日期: ${appointment.date || appointment.appointment_date || '未知日期'}</div>
+                                <div class="info-item">就诊时间: ${appointment.time || appointment.appointment_time || '未知时间'}</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewAppointmentDetail(${appointment.id})">查看详情</button>
+                                ${appointment.status === 'pending' ? '<button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(' + appointment.id + ')">取消预约</button>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // 更新分页
+        function updatePagination(currentPage, totalPages) {
+            const pagination = document.getElementById('appointmentsPagination');
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // 上一页
+            if (currentPage > 1) {
+                paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">«</a></li>`;
+            }
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `<li class="page-item active"><a class="page-link" href="#">${i}</a></li>`;
+                } else {
+                    paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+                }
+            }
+            
+            // 下一页
+            if (currentPage < totalPages) {
+                paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">»</a></li>`;
+            }
+            
+            pagination.innerHTML = paginationHTML;
+        }
+        
+        // 切换页码
+        function changePage(page) {
+            const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+            loadAppointments(activeTab);
+            showToast(`已切换到第${page}页`, 'success');
+        }
+        
+        // 查看预约详情
+        function viewAppointmentDetail(appointmentId) {
+            showToast(`查看预约详情 #${appointmentId}`, 'success');
+            // 实际项目中这里应该跳转到详情页面
+            // window.location.href = `/appointment-detail/${appointmentId}/`;
+        }
+        
+        // 取消预约
+        function cancelAppointment(appointmentId) {
+            if (confirm('确定要取消这个预约吗？')) {
+                showToast(`预约 #${appointmentId} 已取消`, 'success');
+                // 实际项目中这里应该调用取消API
+                setTimeout(() => {
+                    const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+                    loadAppointments(activeTab);
+                }, 1000);
+            }
+        }
+        
+        // 显示提示消息
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

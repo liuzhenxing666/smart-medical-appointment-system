@@ -1,0 +1,410 @@
+/* 我的预约页面样式 —— 青绿医疗风 */
+
+.page {
+  min-height: 100vh;
+  background-color: #f7f7f5;
+}
+
+/* ---------------- 页头 ---------------- */
+.header {
+  background-color: #ffffff;
+  padding: 32rpx 32rpx 0;
+}
+
+.page-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.filters {
+  display: flex;
+  margin-top: 24rpx;
+  border-bottom: 1rpx solid #f0efec;
+}
+
+.tab-item {
+  flex: 1;
+  position: relative;
+  padding: 20rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #78716c;
+}
+
+.tab-item.active {
+  color: #0d9488;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 48rpx;
+  height: 4rpx;
+  background-color: #0d9488;
+  transform: translateX(-50%);
+}
+
+.tab-badge {
+  margin-left: 6rpx;
+  font-size: 20rpx;
+  color: #a8a29e;
+}
+
+.tab-item.active .tab-badge {
+  color: #0d9488;
+}
+
+/* ---------------- 通用区块 ---------------- */
+.block {
+  background-color: #ffffff;
+  margin-top: 12rpx;
+}
+
+/* ---------------- 统计 ---------------- */
+.stats {
+  display: flex;
+  background-color: #ffffff;
+  padding: 28rpx 0;
+  margin-top: 12rpx;
+}
+
+.stat {
+  flex: 1;
+  text-align: center;
+}
+
+.stat + .stat {
+  border-left: 1rpx solid #f0efec;
+}
+
+.stat-number {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #78716c;
+}
+
+/* ---------------- 加载 / 空状态 ---------------- */
+.loading-block,
+.empty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72rpx 32rpx;
+}
+
+.spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  background-color: #0d9488;
+  animation: pulse 1.2s ease-in-out infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #78716c;
+}
+
+.empty-mark {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  color: #0f766e;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.empty-desc {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: #78716c;
+}
+
+.btn.empty-btn {
+  width: 320rpx;
+  margin-top: 32rpx;
+}
+
+/* ---------------- 预约列表 ---------------- */
+.appt {
+  padding: 28rpx 32rpx;
+}
+
+.appt + .appt {
+  border-top: 1rpx solid #f0efec;
+}
+
+.appt:active {
+  background-color: #f7f7f5;
+}
+
+.appt-head {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.doctor-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+  background-color: #f0fdfa;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #0f766e;
+  background-color: #f0fdfa;
+  border: 1rpx solid #ccfbf1;
+  box-sizing: border-box;
+}
+
+.appt-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.appt-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.doctor-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1917;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appt-meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: #78716c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 状态文字标签 */
+.status-tag {
+  flex-shrink: 0;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  border: 1rpx solid transparent;
+}
+
+.status-pending {
+  color: #0d9488;
+  background-color: #f0fdfa;
+  border-color: #ccfbf1;
+}
+
+.status-confirmed {
+  color: #0f766e;
+  background-color: #f0fdfa;
+  border-color: #ccfbf1;
+}
+
+.status-completed {
+  color: #57534e;
+  background-color: #f7f7f5;
+  border-color: #f0efec;
+}
+
+.status-cancelled,
+.status-expired,
+.status-no_show {
+  color: #a8a29e;
+  background-color: #f7f7f5;
+  border-color: #f0efec;
+}
+
+.status-rescheduled {
+  color: #78716c;
+  background-color: #f7f7f5;
+  border-color: #f0efec;
+}
+
+.status-default {
+  color: #78716c;
+  background-color: #f7f7f5;
+  border-color: #f0efec;
+}
+
+/* 预约信息 */
+.info-row {
+  display: flex;
+  align-items: baseline;
+  margin-top: 16rpx;
+}
+
+.info-label {
+  width: 136rpx;
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #a8a29e;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #1c1917;
+}
+
+/* 操作按钮 */
+.appt-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0efec;
+}
+
+.action-btn {
+  flex: 1;
+  height: 64rpx;
+  line-height: 62rpx;
+  padding: 0;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  text-align: center;
+  background-color: #ffffff;
+  border: 1rpx solid #f0efec;
+  color: #57534e;
+  box-sizing: border-box;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  opacity: 0.75;
+}
+
+.detail-btn,
+.review-btn {
+  border-color: #0d9488;
+  color: #0d9488;
+}
+
+.confirm-btn {
+  border-color: #0d9488;
+  background-color: #0d9488;
+  color: #ffffff;
+}
+
+.cancel-btn {
+  border-color: #f0efec;
+  color: #78716c;
+}
+
+/* ---------------- 加载更多 / 页尾 ---------------- */
+.load-more {
+  padding: 24rpx 32rpx 0;
+}
+
+.btn.load-more-btn {
+  height: 80rpx;
+  line-height: 78rpx;
+}
+
+.page-end {
+  padding: 40rpx 0 16rpx;
+  text-align: center;
+}
+
+.page-end-text {
+  font-size: 22rpx;
+  color: #a8a29e;
+}
+
+/* ---------------- 底部快速预约 ---------------- */
+.quick-block {
+  padding: 24rpx 32rpx;
+}
+
+.page-bottom {
+  height: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------------- 按钮 ---------------- */
+.btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0d9488;
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background-color: #0f766e;
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #0d9488;
+  border: 1rpx solid #0d9488;
+  box-sizing: border-box;
+}
+
+.btn-secondary:active {
+  background-color: #f0fdfa;
+}

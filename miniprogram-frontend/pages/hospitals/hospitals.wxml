@@ -1,0 +1,146 @@
+<!-- 医院列表页面 -->
+<view class="page">
+  <!-- 顶部：标题 + 搜索 -->
+  <view class="top">
+    <view class="top-head">
+      <view class="title-wrap">
+        <text class="page-title">医院</text>
+        <text class="page-sub">{{city}} · {{hospitals.length}} 家已收录</text>
+      </view>
+      <view class="filter-entry" bindtap="showFilterPanel">
+        <view class="filter-ico">
+          <view class="fl fl-1"></view>
+          <view class="fl fl-2"></view>
+          <view class="fl fl-3"></view>
+        </view>
+        <text class="filter-entry-txt">筛选</text>
+        <view class="filter-dot" wx:if="{{levelFilter || sortType !== 'default'}}"></view>
+      </view>
+    </view>
+
+    <view class="search">
+      <view class="search-ico"></view>
+      <input
+        class="search-input"
+        placeholder="搜索医院名称"
+        placeholder-class="search-ph"
+        value="{{searchValue}}"
+        confirm-type="search"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <view class="gap"></view>
+
+  <!-- 医院列表 -->
+  <scroll-view class="scroll" scroll-y bindscrolltolower="loadMore">
+    <view class="block" wx:if="{{hospitals.length > 0}}">
+      <view
+        class="h-row"
+        wx:for="{{hospitals}}"
+        wx:key="id"
+        bindtap="onHospitalTap"
+        data-id="{{item.id}}"
+      >
+        <view class="h-badge">{{item.initial}}</view>
+        <view class="h-main">
+          <view class="h-line1">
+            <text class="h-name">{{item.name}}</text>
+            <text class="h-level">{{item.level}}</text>
+          </view>
+          <text class="h-addr">{{item.address}}</text>
+          <view class="h-meta">
+            <text class="h-rate" wx:if="{{item.rating}}">评分 {{item.rating}}</text>
+            <text class="h-sep" wx:if="{{item.rating && item.distance}}">·</text>
+            <text class="h-distance" wx:if="{{item.distance}}">{{item.distance}}</text>
+            <view class="h-tags" wx:if="{{item.tags.length}}">
+              <text class="h-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            </view>
+          </view>
+        </view>
+        <text class="chev">›</text>
+      </view>
+    </view>
+
+    <!-- 首次加载 -->
+    <view class="state" wx:if="{{loading && hospitals.length === 0}}">
+      <view class="spinner"></view>
+      <text class="state-txt">正在加载医院…</text>
+    </view>
+    <view class="state" wx:elif="{{hospitals.length === 0}}">
+      <view class="state-badge">空</view>
+      <text class="state-title">暂无医院数据</text>
+      <text class="state-desc">请尝试调整筛选条件，或搜索其他关键词</text>
+      <view class="state-btn" bindtap="retryLoad">重新加载</view>
+    </view>
+
+    <!-- 列表底部 -->
+    <view class="list-foot" wx:if="{{hospitals.length > 0}}">
+      <text class="list-foot-txt">{{loading ? '加载中…' : (hasMore ? '上拉加载更多' : '没有更多医院了')}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 筛选面板 -->
+  <view class="mask" wx:if="{{filterPanelVisible}}" bindtap="hideFilterPanel">
+    <view class="sheet" catchtap="stopBubble">
+      <view class="sheet-head">
+        <text class="sheet-title">筛选</text>
+        <text class="sheet-close" bindtap="hideFilterPanel">关闭</text>
+      </view>
+
+      <view class="group">
+        <text class="group-title">医院等级</text>
+        <view class="chips">
+          <text
+            class="chip {{levelFilter === '' ? 'on' : ''}}"
+            bindtap="onLevelFilterSelect"
+            data-level=""
+          >全部</text>
+          <text
+            class="chip {{levelFilter === '三甲' ? 'on' : ''}}"
+            bindtap="onLevelFilterSelect"
+            data-level="三甲"
+          >三甲</text>
+          <text
+            class="chip {{levelFilter === '三乙' ? 'on' : ''}}"
+            bindtap="onLevelFilterSelect"
+            data-level="三乙"
+          >三乙</text>
+          <text
+            class="chip {{levelFilter === '二甲' ? 'on' : ''}}"
+            bindtap="onLevelFilterSelect"
+            data-level="二甲"
+          >二甲</text>
+        </view>
+      </view>
+
+      <view class="group">
+        <text class="group-title">排序方式</text>
+        <view class="chips">
+          <text
+            class="chip {{sortType === 'default' ? 'on' : ''}}"
+            bindtap="onSortSelect"
+            data-type="default"
+          >默认排序</text>
+          <text
+            class="chip {{sortType === 'distance' ? 'on' : ''}}"
+            bindtap="onSortSelect"
+            data-type="distance"
+          >距离优先</text>
+          <text
+            class="chip {{sortType === 'rating' ? 'on' : ''}}"
+            bindtap="onSortSelect"
+            data-type="rating"
+          >评分最高</text>
+        </view>
+      </view>
+
+      <view class="sheet-actions">
+        <view class="btn-ghost" bindtap="resetFilter">重置</view>
+        <view class="btn-primary" bindtap="confirmFilter">查看结果</view>
+      </view>
+    </view>
+  </view>
+</view>

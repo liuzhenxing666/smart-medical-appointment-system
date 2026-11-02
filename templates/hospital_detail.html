@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医院详情 - 智能医疗预约系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hospital-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .hospital-info-card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .map-container {
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .navigation-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .navigation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+        }
+        .department-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 20px;
+            padding: 8px 16px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .rating-stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital"></i> 智能医疗预约系统
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">首页</a>
+                <a class="nav-link" href="/appointment-search/">医生搜索</a>
+                <a class="nav-link" href="/appointment-booking/">预约挂号</a>
+                <a class="nav-link" href="/appointment-list/">我的预约</a>
+                <a class="nav-link" href="/profile/">个人中心</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 医院头部信息 -->
+    <div class="hospital-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 id="hospital-name">医院名称</h1>
+                    <p class="lead mb-2" id="hospital-level">医院等级</p>
+                    <p class="mb-0" id="hospital-address">
+                        <i class="fas fa-map-marker-alt"></i> 医院地址
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="rating-stars mb-2" id="hospital-rating">
+                        ★★★★★
+                    </div>
+                    <button class="btn btn-light" onclick="shareHospital()">
+                        <i class="fas fa-share-alt"></i> 分享医院
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 医院基本信息 -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card hospital-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-info-circle text-primary"></i> 医院信息</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><strong>医院类型：</strong><span id="hospital-type">综合医院</span></p>
+                                <p><strong>联系电话：</strong><span id="hospital-phone">020-12345678</span></p>
+                                <p><strong>急诊电话：</strong><span id="emergency-phone">020-87654321</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>医生总数：</strong><span id="total-doctors">150</span> 人</p>
+                                <p><strong>床位总数：</strong><span id="total-beds">800</span> 张</p>
+                                <p><strong>评价数量：</strong><span id="review-count">256</span> 条</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h6><strong>医院简介：</strong></h6>
+                            <p id="hospital-description">医院简介内容...</p>
+                        </div>
+                        <div class="mt-3">
+                            <h6><strong>特色专科：</strong></h6>
+                            <p id="hospital-specialties">特色专科内容...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 科室信息 -->
+                <div class="card hospital-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-stethoscope text-success"></i> 科室信息</h4>
+                        <div id="departments-container" class="mt-3">
+                            <!-- 科室信息将通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医生信息 -->
+                <div class="card hospital-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-user-md text-info"></i> 医生团队</h4>
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="doctor-search-input" placeholder="搜索医生姓名或专业方向">
+                                <button class="btn btn-primary" onclick="searchDoctors()">
+                                    <i class="fas fa-search"></i> 搜索
+                                </button>
+                            </div>
+                        </div>
+                        <div id="doctors-container" class="mt-3">
+                            <!-- 医生信息将通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- 导航和地图 -->
+                <div class="card hospital-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-map-marked-alt text-danger"></i> 导航定位</h4>
+                        <div class="mt-3">
+                            <button class="btn navigation-btn w-100 mb-3" onclick="startNavigation()">
+                                <i class="fas fa-route"></i> 一键导航
+                            </button>
+                            <button class="btn btn-outline-primary w-100 mb-3" onclick="getCurrentLocation()">
+                                <i class="fas fa-location-arrow"></i> 获取当前位置
+                            </button>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="destination-input" placeholder="输入目的地地址">
+                                <button class="btn btn-primary" onclick="searchDestination()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="map-container bg-light mt-3" id="map-container">
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                <i class="fas fa-map-marked-alt fa-3x"></i>
+                                <span class="ms-2">地图加载中...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速操作 -->
+                <div class="card hospital-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-bolt text-warning"></i> 快速操作</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-outline-primary" onclick="viewDoctors()">
+                                <i class="fas fa-user-md"></i> 查看医生
+                            </button>
+                            <button class="btn btn-outline-success" onclick="bookAppointment()">
+                                <i class="fas fa-calendar-check"></i> 立即预约
+                            </button>
+                            <button class="btn btn-outline-info" onclick="callHospital()">
+                                <i class="fas fa-phone"></i> 电话咨询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 智能医疗预约系统. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 高德地图API -->
+    <script src="https://webapi.amap.com/maps?v=2.0&key=您的高德地图API密钥"></script>
+    
+    <script>
+        // 从URL获取医院ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const hospitalId = urlParams.get('id');
+
+        // 页面加载时获取医院数据
+        document.addEventListener('DOMContentLoaded', function() {
+            if (hospitalId) {
+                loadHospitalData(hospitalId);
+                loadDepartments(hospitalId);
+                loadDoctors(hospitalId);
+                initMap();
+            } else {
+                alert('医院ID参数缺失');
+                window.location.href = '/';
+            }
+        });
+
+        // 加载医院数据
+        async function loadHospitalData(hospitalId) {
+            try {
+                const response = await fetch(`/api/hospitals/${hospitalId}/`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const hospital = result.data;
+                    displayHospitalInfo(hospital);
+                } else {
+                    throw new Error(result.message || '获取医院数据失败');
+                }
+            } catch (error) {
+                console.error('Error loading hospital data:', error);
+                alert('加载医院数据失败: ' + error.message);
+            }
+        }
+
+        // 显示医院信息
+        function displayHospitalInfo(hospital) {
+            document.getElementById('hospital-name').textContent = hospital.name;
+            document.getElementById('hospital-level').textContent = hospital.level;
+            document.getElementById('hospital-address').innerHTML = 
+                `<i class="fas fa-map-marker-alt"></i> ${hospital.address}`;
+            document.getElementById('hospital-type').textContent = hospital.hospital_type;
+            document.getElementById('hospital-phone').textContent = hospital.phone || '暂无';
+            document.getElementById('emergency-phone').textContent = hospital.emergency_phone || '暂无';
+            document.getElementById('total-doctors').textContent = hospital.total_doctors;
+            document.getElementById('total-beds').textContent = hospital.total_beds;
+            document.getElementById('review-count').textContent = hospital.review_count;
+            document.getElementById('hospital-description').textContent = hospital.description || '暂无简介';
+            document.getElementById('hospital-specialties').textContent = hospital.specialties || '暂无特色专科信息';
+            
+            // 显示评分
+            const ratingStars = '★'.repeat(Math.round(hospital.average_rating)) + 
+                              '☆'.repeat(5 - Math.round(hospital.average_rating));
+            document.getElementById('hospital-rating').innerHTML = 
+                `<span class="rating-value">${hospital.average_rating}</span> ${ratingStars}`;
+        }
+
+        // 加载科室信息
+        async function loadDepartments(hospitalId) {
+            try {
+                const response = await fetch(`/api/hospitals/${hospitalId}/departments/`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayDepartments(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading departments:', error);
+            }
+        }
+
+        // 显示科室信息
+        function displayDepartments(departments) {
+            const container = document.getElementById('departments-container');
+            
+            if (departments.length === 0) {
+                container.innerHTML = '<p class="text-muted">暂无科室信息</p>';
+                return;
+            }
+
+            let html = '<div class="row">';
+            departments.forEach(dept => {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">${dept.name}</h6>
+                                <p class="card-text text-muted small">
+                                    <i class="fas fa-building"></i> ${dept.floor || '未知楼层'} ${dept.room_number || ''}
+                                </p>
+                                <p class="card-text small">${dept.description || '暂无描述'}</p>
+                                <span class="badge bg-primary">${dept.total_doctors} 位医生</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // 加载医生数据
+        async function loadDoctors(hospitalId) {
+            try {
+                const response = await fetch(`/api/doctors/?hospital_id=${hospitalId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // API返回格式：result.data.results 包含医生数组
+                    const doctors = result.data.results || result.data;
+                    displayDoctors(doctors);
+                } else {
+                    throw new Error(result.message || '获取医生数据失败');
+                }
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+                // 如果API调用失败，使用模拟数据进行测试
+                console.log('API调用失败，使用模拟医生数据进行测试');
+                const mockDoctors = getMockDoctors(hospitalId);
+                displayDoctors(mockDoctors);
+            }
+        }
+
+        // 模拟医生数据（用于测试）
+        function getMockDoctors(hospitalId) {
+            return [
+                {
+                    id: '223e4567-e89b-12d3-a456-426614174000',
+                    name: '张医生',
+                    title: '主任医师',
+                    department: { name: '内科' },
+                    specialization: '心血管疾病',
+                    experience_years: 15,
+                    average_rating: 4.9,
+                    review_count: 120,
+                    consultation_fee: 50,
+                    is_available: true
+                },
+                {
+                    id: '223e4567-e89b-12d3-a456-426614174001',
+                    name: '李医生',
+                    title: '副主任医师',
+                    department: { name: '外科' },
+                    specialization: '骨科手术',
+                    experience_years: 12,
+                    average_rating: 4.8,
+                    review_count: 85,
+                    consultation_fee: 45,
+                    is_available: true
+                },
+                {
+                    id: '223e4567-e89b-12d3-a456-426614174002',
+                    name: '王医生',
+                    title: '主治医师',
+                    department: { name: '儿科' },
+                    specialization: '儿童常见病',
+                    experience_years: 8,
+                    average_rating: 4.7,
+                    review_count: 65,
+                    consultation_fee: 35,
+                    is_available: true
+                }
+            ];
+        }
+
+        // 显示医生信息
+        function displayDoctors(doctors) {
+            const container = document.getElementById('doctors-container');
+            
+            if (doctors.length === 0) {
+                container.innerHTML = '<p class="text-muted">该医院暂无医生信息</p>';
+                return;
+            }
+
+            let html = '<div class="row">';
+            doctors.forEach(doctor => {
+                const ratingStars = '★'.repeat(Math.round(doctor.average_rating || 0)) + 
+                                  '☆'.repeat(5 - Math.round(doctor.average_rating || 0));
+                
+                html += `
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <img src="${doctor.avatar || '/static/images/doctor-default.png'}" 
+                                             class="img-fluid rounded-circle" 
+                                             alt="${doctor.name}"
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                    </div>
+                                    <div class="col-9">
+                                        <h6 class="card-title mb-1">${doctor.name}</h6>
+                                        <p class="card-text text-muted small mb-1">
+                                            <span class="badge bg-primary">${doctor.title}</span>
+                                            <span class="badge bg-secondary">${doctor.department_name}</span>
+                                        </p>
+                                        <p class="card-text small mb-2">
+                                            <strong>专业方向：</strong>${doctor.specialty || '暂无'}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="rating-stars small">
+                                                ${ratingStars} 
+                                                <span class="text-muted">${doctor.average_rating || 0}</span>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    onclick="viewDoctorDetail('${doctor.id}')">
+                                                查看详情
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // 搜索医生
+        function searchDoctors() {
+            const searchTerm = document.getElementById('doctor-search-input').value.trim().toLowerCase();
+            const doctorCards = document.querySelectorAll('#doctors-container .card');
+            
+            doctorCards.forEach(card => {
+                const doctorName = card.querySelector('.card-title').textContent.toLowerCase();
+                const doctorSpecialty = card.querySelector('p strong + span').textContent.toLowerCase();
+                
+                if (doctorName.includes(searchTerm) || doctorSpecialty.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 查看医生详情
+        function viewDoctorDetail(doctorId) {
+            window.location.href = `/doctor-detail/${doctorId}/`;
+        }
+
+        // 初始化地图
+        function initMap() {
+            // 这里需要高德地图API密钥
+            // 实际使用时需要申请并配置高德地图API密钥
+            console.log('地图初始化功能需要配置高德地图API密钥');
+            
+            // 临时显示地图占位符
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.innerHTML = `
+                <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                    <i class="fas fa-map-marked-alt fa-3x mb-3"></i>
+                    <p>地图功能需要配置高德地图API密钥</p>
+                    <small class="text-center">请申请高德地图API密钥并配置到代码中</small>
+                </div>
+            `;
+        }
+
+        // 导航功能
+        function startNavigation() {
+            const hospitalName = document.getElementById('hospital-name').textContent;
+            const hospitalAddress = document.getElementById('hospital-address').textContent.replace('医院地址', '').trim();
+            
+            // 使用高德地图导航
+            const url = `https://uri.amap.com/navigation?to=${encodeURIComponent(hospitalAddress)}&toName=${encodeURIComponent(hospitalName)}&callnative=1`;
+            window.open(url, '_blank');
+        }
+
+        // 获取当前位置
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        alert(`当前位置：纬度 ${lat.toFixed(6)}, 经度 ${lng.toFixed(6)}`);
+                    },
+                    function(error) {
+                        alert('获取位置失败: ' + error.message);
+                    }
+                );
+            } else {
+                alert('浏览器不支持地理位置服务');
+            }
+        }
+
+        // 搜索目的地
+        function searchDestination() {
+            const destination = document.getElementById('destination-input').value.trim();
+            if (destination) {
+                const url = `https://uri.amap.com/search?keyword=${encodeURIComponent(destination)}`;
+                window.open(url, '_blank');
+            } else {
+                alert('请输入目的地地址');
+            }
+        }
+
+        // 分享医院
+        function shareHospital() {
+            const hospitalName = document.getElementById('hospital-name').textContent;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: hospitalName,
+                    text: `查看 ${hospitalName} 的详细信息`,
+                    url: url
+                });
+            } else {
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制到剪贴板');
+                });
+            }
+        }
+
+        // 快速操作函数
+        function viewDoctors() {
+            window.location.href = `/appointment-search/?hospital=${hospitalId}`;
+        }
+
+        function bookAppointment() {
+            window.location.href = `/appointment-booking/?hospital=${hospitalId}`;
+        }
+
+        function callHospital() {
+            const phone = document.getElementById('hospital-phone').textContent;
+            if (phone && phone !== '暂无') {
+                window.location.href = `tel:${phone}`;
+            } else {
+                alert('该医院暂无联系电话');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API交互测试 - 智能预约挂号系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .test-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .test-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .test-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .test-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .api-path {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .test-button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: black;
+        }
+        .progress-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">API交互测试 - 智能预约挂号系统</h1>
+        
+        <div class="test-section">
+            <h2>测试概述</h2>
+            <p>本页面用于测试前端与后端API的交互是否正常。点击下方的测试按钮，系统会发送请求到对应的API端点，并显示响应结果。</p>
+            
+            <div class="progress-container">
+                <div class="progress">
+                    <div id="test-progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <p class="mt-2">测试进度: <span id="progress-text">0/0</span></p>
+            </div>
+            
+            <div class="mt-3">
+                <button id="run-all-tests" class="btn btn-primary test-button">运行所有测试</button>
+                <button id="clear-results" class="btn btn-secondary test-button">清除结果</button>
+            </div>
+        </div>
+        
+        <!-- 用户认证API测试 -->
+        <div class="test-section">
+            <h3>用户认证API <span class="status-badge status-pending" data-api="auth">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="auth-login">测试登录</button>
+                <button class="btn btn-outline-primary test-button" data-test="auth-check">检查用户状态</button>
+                <button class="btn btn-outline-primary test-button" data-test="auth-refresh">刷新Token</button>
+            </div>
+            <div id="auth-results"></div>
+        </div>
+        
+        <!-- 医院API测试 -->
+        <div class="test-section">
+            <h3>医院API <span class="status-badge status-pending" data-api="hospitals">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="hospital-list">获取医院列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="hospital-search">搜索医院</button>
+                <button class="btn btn-outline-primary test-button" data-test="hospital-nearby">附近医院</button>
+                <button class="btn btn-outline-primary test-button" data-test="hospital-departments">获取科室列表</button>
+            </div>
+            <div id="hospitals-results"></div>
+        </div>
+        
+        <!-- 医生API测试 -->
+        <div class="test-section">
+            <h3>医生API <span class="status-badge status-pending" data-api="doctors">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="doctor-list">获取医生列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="doctor-search">搜索医生</button>
+                <button class="btn btn-outline-primary test-button" data-test="doctor-nearby">附近医生</button>
+                <button class="btn btn-outline-primary test-button" data-test="doctor-schedules">获取医生排班</button>
+            </div>
+            <div id="doctors-results"></div>
+        </div>
+        
+        <!-- 预约API测试 -->
+        <div class="test-section">
+            <h3>预约API <span class="status-badge status-pending" data-api="appointments">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="appointment-list">获取预约列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="appointment-create">创建预约</button>
+                <button class="btn btn-outline-primary test-button" data-test="appointment-cancel">取消预约</button>
+                <button class="btn btn-outline-primary test-button" data-test="appointment-dashboard">预约仪表板</button>
+            </div>
+            <div id="appointments-results"></div>
+        </div>
+        
+        <!-- 收藏API测试 -->
+        <div class="test-section">
+            <h3>收藏API <span class="status-badge status-pending" data-api="favorites">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="favorite-list">获取收藏列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="favorite-add">添加收藏</button>
+                <button class="btn btn-outline-primary test-button" data-test="favorite-remove">移除收藏</button>
+            </div>
+            <div id="favorites-results"></div>
+        </div>
+        
+        <!-- 位置API测试 -->
+        <div class="test-section">
+            <h3>位置API <span class="status-badge status-pending" data-api="location">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="location-cities">获取城市列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="location-districts">获取区域列表</button>
+                <button class="btn btn-outline-primary test-button" data-test="location-geocode">地理编码</button>
+            </div>
+            <div id="location-results"></div>
+        </div>
+        
+        <!-- 推荐API测试 -->
+        <div class="test-section">
+            <h3>推荐API <span class="status-badge status-pending" data-api="recommendation">待测试</span></h3>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary test-button" data-test="recommendation-hospitals">推荐医院</button>
+                <button class="btn btn-outline-primary test-button" data-test="recommendation-doctors">推荐医生</button>
+            </div>
+            <div id="recommendation-results"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/api-test.js"></script>
+    <script>
+        // API基础URL
+        const API_BASE_URL = '/api';
+        
+        // 测试结果统计
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            completed: 0
+        };
+        
+        // 当前运行的测试
+        let currentTest = null;
+        
+        // 测试配置
+        const testConfigs = {
+            'auth-login': {
+                url: `${API_BASE_URL}/users/auth/login/`,
+                method: 'POST',
+                data: {
+                    username: 'testuser',
+                    password: 'testpass'
+                },
+                description: '用户登录'
+            },
+            'auth-check': {
+                url: `${API_BASE_URL}/users/auth/check/`,
+                method: 'GET',
+                requiresAuth: true,
+                description: '检查用户状态'
+            },
+            'auth-refresh': {
+                url: `${API_BASE_URL}/users/auth/refresh-token/`,
+                method: 'POST',
+                requiresAuth: true,
+                description: '刷新Token'
+            },
+            'hospital-list': {
+                url: `${API_BASE_URL}/hospitals/`,
+                method: 'GET',
+                description: '获取医院列表'
+            },
+            'hospital-search': {
+                url: `${API_BASE_URL}/hospitals/search/`,
+                method: 'GET',
+                params: {
+                    q: '医院'
+                },
+                description: '搜索医院'
+            },
+            'hospital-nearby': {
+                url: `${API_BASE_URL}/hospitals/nearby/`,
+                method: 'GET',
+                params: {
+                    latitude: 39.9042,
+                    longitude: 116.4074,
+                    radius: 10
+                },
+                description: '附近医院'
+            },
+            'hospital-departments': {
+                url: `${API_BASE_URL}/hospitals/departments/`,
+                method: 'GET',
+                description: '获取科室列表'
+            },
+            'doctor-list': {
+                url: `${API_BASE_URL}/doctors/`,
+                method: 'GET',
+                description: '获取医生列表'
+            },
+            'doctor-search': {
+                url: `${API_BASE_URL}/doctors/search/`,
+                method: 'GET',
+                params: {
+                    q: '医生'
+                },
+                description: '搜索医生'
+            },
+            'doctor-nearby': {
+                url: `${API_BASE_URL}/doctors/nearby/`,
+                method: 'GET',
+                params: {
+                    latitude: 39.9042,
+                    longitude: 116.4074,
+                    radius: 10
+                },
+                description: '附近医生'
+            },
+            'doctor-schedules': {
+                url: `${API_BASE_URL}/doctors/schedules/`,
+                method: 'GET',
+                description: '获取医生排班'
+            },
+            'appointment-list': {
+                url: `${API_BASE_URL}/appointments/`,
+                method: 'GET',
+                requiresAuth: true,
+                description: '获取预约列表'
+            },
+            'appointment-create': {
+                url: `${API_BASE_URL}/appointments/`,
+                method: 'POST',
+                requiresAuth: true,
+                data: {
+                    doctor_id: '1',
+                    appointment_date: '2024-01-01',
+                    time_slot: 'morning',
+                    patient_name: '测试患者',
+                    patient_phone: '13800138000',
+                    patient_id_card: '110101199001011234',
+                    description: '测试预约'
+                },
+                description: '创建预约'
+            },
+            'appointment-cancel': {
+                url: `${API_BASE_URL}/appointments/1/cancel/`,
+                method: 'POST',
+                requiresAuth: true,
+                description: '取消预约'
+            },
+            'appointment-dashboard': {
+                url: `${API_BASE_URL}/appointments/dashboard/`,
+                method: 'GET',
+                requiresAuth: true,
+                description: '预约仪表板'
+            },
+            'favorite-list': {
+                url: `${API_BASE_URL}/favorites/`,
+                method: 'GET',
+                requiresAuth: true,
+                description: '获取收藏列表'
+            },
+            'favorite-add': {
+                url: `${API_BASE_URL}/favorites/`,
+                method: 'POST',
+                requiresAuth: true,
+                data: {
+                    content_type: 'hospital',
+                    object_id: '1'
+                },
+                description: '添加收藏'
+            },
+            'favorite-remove': {
+                url: `${API_BASE_URL}/favorites/1/`,
+                method: 'DELETE',
+                requiresAuth: true,
+                description: '移除收藏'
+            },
+            'location-cities': {
+                url: `${API_BASE_URL}/location/cities/`,
+                method: 'GET',
+                description: '获取城市列表'
+            },
+            'location-districts': {
+                url: `${API_BASE_URL}/location/districts/`,
+                method: 'GET',
+                params: {
+                    city_id: '1'
+                },
+                description: '获取区域列表'
+            },
+            'location-geocode': {
+                url: `${API_BASE_URL}/location/geocode/`,
+                method: 'GET',
+                params: {
+                    address: '北京市朝阳区'
+                },
+                description: '地理编码'
+            },
+            'recommendation-hospitals': {
+                url: `${API_BASE_URL}/recommendation/hospitals/`,
+                method: 'GET',
+                description: '推荐医院'
+            },
+            'recommendation-doctors': {
+                url: `${API_BASE_URL}/recommendation/doctors/`,
+                method: 'GET',
+                description: '推荐医生'
+            }
+        };
+        
+        // DOM元素
+        const runAllTestsBtn = document.getElementById('run-all-tests');
+        const clearResultsBtn = document.getElementById('clear-results');
+        const testProgress = document.getElementById('test-progress');
+        const progressText = document.getElementById('progress-text');
+        
+        // 初始化事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 单个测试按钮点击事件
+            const testButtons = document.querySelectorAll('[data-test]');
+            testButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const testId = this.dataset.test;
+                    runSingleTest(testId);
+                });
+            });
+            
+            // 运行所有测试按钮点击事件
+            runAllTestsBtn.addEventListener('click', async function() {
+                await runAllTests();
+                updateTestResults();
+            });
+            
+            // 清除结果按钮点击事件
+            clearResultsBtn.addEventListener('click', clearResults);
+            
+            // 初始化测试结果
+            updateTestResults();
+        });
+        
+        // 运行单个测试
+        async function runSingleTest(testId) {
+            const config = testConfigs[testId];
+            if (!config) {
+                console.error(`未找到测试配置: ${testId}`);
+                return;
+            }
+            
+            currentTest = testId;
+            updateTestStatus(testId, 'running');
+            
+            try {
+                const result = await executeApiTest(config);
+                displayTestResult(testId, result, true);
+                updateTestStatus(testId, 'success');
+                testResults.passed++;
+            } catch (error) {
+                displayTestResult(testId, error, false);
+                updateTestStatus(testId, 'error');
+                testResults.failed++;
+            }
+            
+            testResults.completed++;
+            updateProgress();
+            currentTest = null;
+        }
+        
+        // 运行所有测试
+        async function runAllTests() {
+            // 重置测试结果
+            resetTestResults();
+            
+            // 获取所有测试ID
+            const testIds = Object.keys(testConfigs);
+            testResults.total = testIds.length;
+            
+            // 按顺序运行测试
+            for (const testId of testIds) {
+                await runSingleTest(testId);
+                // 添加延迟，避免请求过快
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            // 显示测试总结
+            showTestSummary();
+        }
+        
+        // 执行API测试
+        async function executeApiTest(config) {
+            const { url, method, params, data, requiresAuth } = config;
+            
+            // 构建请求选项
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            // 添加认证头
+            if (requiresAuth) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('需要登录但未找到Token');
+                }
+                options.headers.Authorization = `Bearer ${token}`;
+            }
+            
+            // 添加请求体
+            if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+                options.body = JSON.stringify(data);
+            }
+            
+            // 构建URL
+            let requestUrl = url;
+            if (params) {
+                const queryParams = new URLSearchParams();
+                for (const [key, value] of Object.entries(params)) {
+                    queryParams.append(key, value);
+                }
+                requestUrl += `?${queryParams.toString()}`;
+            }
+            
+            // 发送请求
+            const response = await fetch(requestUrl, options);
+            
+            // 处理响应
+            let responseData;
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                responseData = await response.json();
+            } else {
+                responseData = await response.text();
+            }
+            
+            // 检查响应状态
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseData.detail || response.statusText}`);
+            }
+            
+            // 保存登录响应中的Token
+            if (config.url.includes('/auth/login/') && responseData.access) {
+                localStorage.setItem('token', responseData.access);
+            }
+            
+            return {
+                status: response.status,
+                statusText: response.statusText,
+                data: responseData
+            };
+        }
+        
+        // 显示测试结果
+        function displayTestResult(testId, result, isSuccess) {
+            const config = testConfigs[testId];
+            const apiCategory = getApiCategory(testId);
+            const resultsContainer = document.getElementById(`${apiCategory}-results`);
+            
+            if (!resultsContainer) return;
+            
+            const resultElement = document.createElement('div');
+            resultElement.className = `test-result ${isSuccess ? 'test-success' : 'test-error'}`;
+            resultElement.id = `result-${testId}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            
+            if (isSuccess) {
+                resultElement.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><strong>${config.description}</strong> - ${timestamp}</span>
+                        <span class="badge bg-success">成功</span>
+                    </div>
+                    <div class="mt-2">
+                        <div><span class="api-path">${config.method} ${config.url}</span></div>
+                        <div>状态码: ${result.status} ${result.statusText}</div>
+                        <div class="mt-2">响应数据:</div>
+                        <pre>${JSON.stringify(result.data, null, 2)}</pre>
+                    </div>
+                `;
+            } else {
+                resultElement.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><strong>${config.description}</strong> - ${timestamp}</span>
+                        <span class="badge bg-danger">失败</span>
+                    </div>
+                    <div class="mt-2">
+                        <div><span class="api-path">${config.method} ${config.url}</span></div>
+                        <div>错误信息: ${result.message}</div>
+                    </div>
+                `;
+            }
+            
+            resultsContainer.appendChild(resultElement);
+        }
+        
+        // 更新测试状态
+        function updateTestStatus(testId, status) {
+            const apiCategory = getApiCategory(testId);
+            const statusBadge = document.querySelector(`[data-api="${apiCategory}"]`);
+            
+            if (!statusBadge) return;
+            
+            statusBadge.classList.remove('status-pending', 'status-success', 'status-error');
+            
+            if (status === 'running') {
+                statusBadge.textContent = '测试中...';
+                statusBadge.classList.add('status-pending');
+            } else if (status === 'success') {
+                statusBadge.textContent = '通过';
+                statusBadge.classList.add('status-success');
+            } else if (status === 'error') {
+                statusBadge.textContent = '失败';
+                statusBadge.classList.add('status-error');
+            }
+        }
+        
+        // 获取API类别
+        function getApiCategory(testId) {
+            if (testId.startsWith('auth-')) return 'auth';
+            if (testId.startsWith('hospital-')) return 'hospitals';
+            if (testId.startsWith('doctor-')) return 'doctors';
+            if (testId.startsWith('appointment-')) return 'appointments';
+            if (testId.startsWith('favorite-')) return 'favorites';
+            if (testId.startsWith('location-')) return 'location';
+            if (testId.startsWith('recommendation-')) return 'recommendation';
+            return 'unknown';
+        }
+        
+        // 更新进度
+        function updateProgress() {
+            const percentage = Math.round((testResults.completed / testResults.total) * 100);
+            testProgress.style.width = `${percentage}%`;
+            testProgress.setAttribute('aria-valuenow', percentage);
+            testProgress.textContent = `${percentage}%`;
+            progressText.textContent = `${testResults.completed}/${testResults.total}`;
+        }
+        
+        // 重置测试结果
+        function resetTestResults() {
+            testResults = {
+                total: 0,
+                passed: 0,
+                failed: 0,
+                completed: 0
+            };
+            
+            // 重置进度条
+            testProgress.style.width = '0%';
+            testProgress.setAttribute('aria-valuenow', 0);
+            testProgress.textContent = '0%';
+            progressText.textContent = '0/0';
+            
+            // 重置状态徽章
+            const statusBadges = document.querySelectorAll('.status-badge');
+            statusBadges.forEach(badge => {
+                badge.classList.remove('status-success', 'status-error');
+                badge.classList.add('status-pending');
+                badge.textContent = '待测试';
+            });
+        }
+        
+        // 清除结果
+        function clearResults() {
+            const resultContainers = document.querySelectorAll('[id$="-results"]');
+            resultContainers.forEach(container => {
+                container.innerHTML = '';
+            });
+            
+            resetTestResults();
+        }
+        
+        // 显示测试总结
+        function showTestSummary() {
+            const summaryElement = document.createElement('div');
+            summaryElement.className = 'test-result test-info';
+            
+            const successRate = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+            
+            summaryElement.innerHTML = `
+                <h4>测试总结</h4>
+                <div>总测试数: ${testResults.total}</div>
+                <div>通过: ${testResults.passed}</div>
+                <div>失败: ${testResults.failed}</div>
+                <div>成功率: ${successRate}%</div>
+            `;
+            
+            document.querySelector('.test-section').appendChild(summaryElement);
+        }
+    </script>
+</body>
+</html>

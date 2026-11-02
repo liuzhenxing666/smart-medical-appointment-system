@@ -1,0 +1,45 @@
+<!-- pages/edit-profile/edit-profile.wxml -->
+<view class="page">
+  <!-- 基本信息 -->
+  <view class="section">
+    <text class="section-title">基本信息</text>
+
+    <view class="field">
+      <text class="field-label">姓名</text>
+      <input
+        class="field-input"
+        placeholder="请输入姓名"
+        value="{{name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <view class="field">
+      <text class="field-label">年龄</text>
+      <input
+        class="field-input"
+        type="number"
+        placeholder="请输入年龄"
+        value="{{age}}"
+        bindinput="onAgeInput"
+      />
+    </view>
+
+    <view class="field">
+      <text class="field-label">性别</text>
+      <picker class="field-picker-wrap" mode="selector" range="{{genderOptions}}" value="{{genderIndex}}" bindchange="onGenderChange">
+        <view class="field-picker">
+          <text class="picker-value">{{genderOptions[genderIndex]}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="actions">
+    <button class="btn-primary" bindtap="saveProfile" loading="{{isSubmitting}}" disabled="{{isSubmitting}}">
+      保存
+    </button>
+  </view>
+</view>

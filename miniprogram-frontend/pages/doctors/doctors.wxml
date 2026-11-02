@@ -1,0 +1,192 @@
+<!-- 医生列表页面 -->
+<view class="page">
+  <!-- 顶部：标题 + 搜索 -->
+  <view class="top">
+    <view class="top-head">
+      <view class="title-wrap">
+        <text class="page-title">医生</text>
+        <text class="page-sub">共 {{doctors.length}} 位 · 按评分推荐</text>
+      </view>
+      <view class="filter-entry" bindtap="showFilter">
+        <view class="filter-ico">
+          <view class="fl fl-1"></view>
+          <view class="fl fl-2"></view>
+          <view class="fl fl-3"></view>
+        </view>
+        <text class="filter-entry-txt">筛选</text>
+        <view class="filter-dot" wx:if="{{selectedSpecialty || selectedHospitalIndex > 0 || sortBy !== 'average_rating'}}"></view>
+      </view>
+    </view>
+
+    <view class="search">
+      <view class="search-ico"></view>
+      <input
+        class="search-input"
+        placeholder="搜索医生姓名或科室"
+        placeholder-class="search-ph"
+        value="{{searchKeyword}}"
+        confirm-type="search"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <text class="search-clear" wx:if="{{searchKeyword}}" catchtap="clearSearch">清除</text>
+    </view>
+  </view>
+
+  <view class="gap"></view>
+
+  <!-- 医生列表 -->
+  <scroll-view
+    class="scroll"
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <view class="block" wx:if="{{doctors.length > 0}}">
+      <view
+        class="d-row"
+        wx:for="{{doctors}}"
+        wx:key="id"
+        bindtap="viewDoctorDetail"
+        data-doctor="{{item}}"
+      >
+        <view class="d-avatar">{{item.initial}}</view>
+        <view class="d-main">
+          <view class="d-line1">
+            <text class="d-name">{{item.name}}</text>
+            <text class="d-title">{{item.title}}</text>
+          </view>
+          <text class="d-meta">{{item.hospital_name}} · {{item.specialty}}</text>
+          <view class="d-stats">
+            <text class="d-stat">评分 <text class="d-num">{{item.average_rating}}</text></text>
+            <view class="d-divider"></view>
+            <text class="d-stat">经验 <text class="d-num">{{item.experience}}年</text></text>
+            <view class="d-divider"></view>
+            <text class="d-stat">咨询 <text class="d-num">{{item.consultation_count}}</text></text>
+          </view>
+        </view>
+        <view class="d-side">
+          <text class="d-fee">¥{{item.consultation_fee}}</text>
+          <view
+            class="d-book {{item.is_available ? '' : 'off'}}"
+            catchtap="makeAppointment"
+            data-doctor="{{item}}"
+          >{{item.is_available ? '预约' : '已满'}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 首次加载 -->
+    <view class="state" wx:if="{{isLoading && doctors.length === 0}}">
+      <view class="spinner"></view>
+      <text class="state-txt">正在加载医生…</text>
+    </view>
+    <view class="state" wx:elif="{{doctors.length === 0}}">
+      <view class="state-badge">医</view>
+      <text class="state-title">暂无医生数据</text>
+      <text class="state-desc">请尝试调整筛选条件，或搜索其他关键词</text>
+      <view class="state-btn" bindtap="applyFilters">重新加载</view>
+    </view>
+
+    <!-- 列表底部 -->
+    <view class="list-foot" wx:if="{{doctors.length > 0}}">
+      <text class="list-foot-txt">{{loadingMore ? '加载中…' : (hasMore ? '上拉加载更多' : '没有更多医生了')}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 筛选面板 -->
+  <view class="mask" wx:if="{{showFilters}}" bindtap="hideFilter">
+    <view class="sheet" catchtap="stopBubble">
+      <view class="sheet-head">
+        <text class="sheet-title">筛选</text>
+        <text class="sheet-close" bindtap="hideFilter">关闭</text>
+      </view>
+
+      <view class="group">
+        <text class="group-title">科室</text>
+        <view class="chips">
+          <text
+            class="chip {{selectedSpecialty === '' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty=""
+          >全部</text>
+          <text
+            class="chip {{selectedSpecialty === '针灸科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="针灸科"
+          >针灸科</text>
+          <text
+            class="chip {{selectedSpecialty === '推拿科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="推拿科"
+          >推拿科</text>
+          <text
+            class="chip {{selectedSpecialty === '中医内科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="中医内科"
+          >中医内科</text>
+          <text
+            class="chip {{selectedSpecialty === '中医外科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="中医外科"
+          >中医外科</text>
+          <text
+            class="chip {{selectedSpecialty === '中医妇科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="中医妇科"
+          >中医妇科</text>
+          <text
+            class="chip {{selectedSpecialty === '中医儿科' ? 'on' : ''}}"
+            bindtap="selectSpecialty"
+            data-specialty="中医儿科"
+          >中医儿科</text>
+        </view>
+      </view>
+
+      <view class="group">
+        <text class="group-title">医院</text>
+        <picker
+          class="hospital-picker"
+          mode="selector"
+          range="{{hospitalOptions}}"
+          range-key="name"
+          value="{{selectedHospitalIndex}}"
+          bindchange="onHospitalChange"
+        >
+          <view class="picker-value">
+            {{selectedHospitalIndex >= 0 ? hospitalOptions[selectedHospitalIndex].name : '选择医院'}}
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="group">
+        <text class="group-title">排序方式</text>
+        <view class="chips">
+          <text
+            class="chip {{sortBy === 'average_rating' ? 'on' : ''}}"
+            bindtap="selectSort"
+            data-sort="average_rating"
+          >评分最高</text>
+          <text
+            class="chip {{sortBy === 'experience' ? 'on' : ''}}"
+            bindtap="selectSort"
+            data-sort="experience"
+          >经验丰富</text>
+          <text
+            class="chip {{sortBy === 'consultation_fee' ? 'on' : ''}}"
+            bindtap="selectSort"
+            data-sort="consultation_fee"
+          >价格从低到高</text>
+        </view>
+      </view>
+
+      <view class="sheet-actions">
+        <view class="btn-ghost" bindtap="resetFilters">重置</view>
+        <view class="btn-primary" bindtap="applyFilters">查看结果</view>
+      </view>
+    </view>
+  </view>
+</view>

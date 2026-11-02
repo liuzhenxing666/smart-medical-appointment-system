@@ -1,0 +1,19 @@
+<!-- 搜索栏组件 -->
+<view class="search-bar">
+  <view class="search-input-wrapper">
+    <text class="iconfont icon-search search-icon"></text>
+    <input 
+      class="search-input" 
+      placeholder="{{placeholder || '搜索'}}" 
+      bindinput="onSearchInput"
+      value="{{searchValue}}"
+      confirm-type="search"
+      bindconfirm="onSearchConfirm"
+    />
+    <text class="iconfont icon-close-circle search-clear" wx:if="{{searchValue}}" bindtap="onClearSearch"></text>
+  </view>
+  <view class="filter-btn" wx:if="{{showFilter}}" bindtap="onFilterTap">
+    <text class="iconfont icon-filter"></text>
+    <text>筛选</text>
+  </view>
+</view>

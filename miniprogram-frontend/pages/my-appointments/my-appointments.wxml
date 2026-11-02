@@ -1,0 +1,157 @@
+<!-- 我的预约页面 -->
+<view class="page">
+  <!-- 页头与筛选 -->
+  <view class="header">
+    <text class="page-title">我的预约</text>
+    <view class="filters">
+      <view
+        class="tab-item {{currentFilter === 'all' ? 'active' : ''}}"
+        bindtap="switchFilter"
+        data-filter="all"
+      >
+        <text>全部</text>
+        <text class="tab-badge" wx:if="{{appointmentStats.total > 0}}">{{appointmentStats.total}}</text>
+      </view>
+      <view
+        class="tab-item {{currentFilter === 'upcoming' ? 'active' : ''}}"
+        bindtap="switchFilter"
+        data-filter="upcoming"
+      >
+        <text>即将就诊</text>
+        <text class="tab-badge" wx:if="{{appointmentStats.upcoming > 0}}">{{appointmentStats.upcoming}}</text>
+      </view>
+      <view
+        class="tab-item {{currentFilter === 'pending' ? 'active' : ''}}"
+        bindtap="switchFilter"
+        data-filter="pending"
+      >
+        <text>待确认</text>
+        <text class="tab-badge" wx:if="{{appointmentStats.pending > 0}}">{{appointmentStats.pending}}</text>
+      </view>
+      <view
+        class="tab-item {{currentFilter === 'history' ? 'active' : ''}}"
+        bindtap="switchFilter"
+        data-filter="history"
+      >
+        <text>历史记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计 -->
+  <view class="stats" wx:if="{{currentFilter === 'all'}}">
+    <view class="stat">
+      <text class="stat-number">{{appointmentStats.total}}</text>
+      <text class="stat-label">总预约</text>
+    </view>
+    <view class="stat">
+      <text class="stat-number">{{appointmentStats.upcoming}}</text>
+      <text class="stat-label">即将就诊</text>
+    </view>
+    <view class="stat">
+      <text class="stat-number">{{appointmentStats.pending}}</text>
+      <text class="stat-label">待确认</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="block loading-block" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-text">正在加载预约记录</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="block empty-block" wx:if="{{appointments.length === 0 && !loading}}">
+    <view class="empty-mark">约</view>
+    <text class="empty-title">暂无预约记录</text>
+    <text class="empty-desc">选择医院与医生，开始一次预约</text>
+    <button class="btn btn-primary empty-btn" bindtap="goToDoctors">预约医生</button>
+  </view>
+
+  <!-- 预约列表 -->
+  <view class="block list-block" wx:if="{{appointments.length > 0}}">
+    <view
+      class="appt"
+      wx:for="{{appointments}}"
+      wx:key="id"
+      bindtap="viewAppointmentDetail"
+      data-appointment="{{item}}"
+    >
+      <view class="appt-head">
+        <image
+          wx:if="{{item.doctor_avatar && !item.avatar_error}}"
+          class="doctor-avatar"
+          src="{{item.doctor_avatar}}"
+          mode="aspectFill"
+          binderror="onImageError"
+          data-index="{{index}}"
+        ></image>
+        <view wx:else class="doctor-avatar avatar-fallback">{{item.doctor_initial}}</view>
+
+        <view class="appt-main">
+          <view class="appt-title-row">
+            <text class="doctor-name">{{item.doctor_name || '医生'}}</text>
+            <text class="status-tag {{item.status_class}}">{{item.status_text}}</text>
+          </view>
+          <text class="appt-meta">{{item.department_name || '普通门诊'}}{{item.hospital_name ? ' · ' + item.hospital_name : ''}}</text>
+        </view>
+      </view>
+
+      <view class="info-row">
+        <text class="info-label">预约时间</text>
+        <text class="info-value">{{item.formatted_time || item.appointment_time || '时间待定'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">就诊类型</text>
+        <text class="info-value">{{item.appointment_type_display}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">就诊人</text>
+        <text class="info-value">{{item.patient_name || '本人'}}</text>
+      </view>
+
+      <view class="appt-actions">
+        <button
+          class="action-btn detail-btn"
+          catchtap="viewAppointmentDetail"
+          data-appointment="{{item}}"
+        >查看详情</button>
+        <button
+          class="action-btn confirm-btn"
+          wx:if="{{item.status === 'confirmed'}}"
+          catchtap="confirmArrival"
+          data-id="{{item.id}}"
+        >确认到达</button>
+        <button
+          class="action-btn cancel-btn"
+          wx:if="{{item.status === 'pending' || item.status === 'confirmed'}}"
+          catchtap="cancelAppointment"
+          data-id="{{item.id}}"
+        >取消预约</button>
+        <button
+          class="action-btn review-btn"
+          wx:if="{{item.status === 'completed'}}"
+          catchtap="writeReview"
+          data-id="{{item.id}}"
+        >写评价</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !loading}}">
+    <button class="btn btn-secondary load-more-btn" bindtap="loadMore">加载更多</button>
+  </view>
+
+  <!-- 全部加载完毕 -->
+  <view class="page-end" wx:if="{{appointments.length > 0 && !loading && !hasMore}}">
+    <text class="page-end-text">没有更多预约了</text>
+  </view>
+
+  <!-- 快速预约 -->
+  <view class="block quick-block" wx:if="{{appointments.length > 0}}">
+    <button class="btn btn-primary" bindtap="quickAppointment">快速预约医生</button>
+  </view>
+
+  <view class="page-bottom"></view>
+</view>

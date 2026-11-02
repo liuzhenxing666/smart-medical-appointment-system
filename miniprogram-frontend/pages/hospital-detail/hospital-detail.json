@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "医院详情",
+  "navigationBarBackgroundColor": "#0d9488",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f7f7f5",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

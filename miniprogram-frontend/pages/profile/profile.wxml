@@ -1,0 +1,151 @@
+<!-- 个人中心页面 -->
+<view class="page">
+  <!-- 顶部身份区 -->
+  <view class="identity">
+    <image
+      wx:if="{{userInfo}}"
+      class="avatar"
+      src="{{userInfo.avatar}}"
+      mode="aspectFill"
+      bindtap="changeAvatar"
+      binderror="onImageError"
+    ></image>
+    <view wx:else class="avatar avatar-empty">
+      <view class="avatar-head"></view>
+      <view class="avatar-shoulder"></view>
+    </view>
+
+    <view class="identity-main">
+      <text class="identity-name" wx:if="{{userInfo}}">{{userInfo.nickname || '微信用户'}}</text>
+      <text class="identity-name" wx:else>未登录</text>
+      <text class="identity-phone" wx:if="{{userInfo}}">{{userInfo.phone || '未绑定手机号'}}</text>
+      <text class="identity-phone" wx:else>登录后查看预约与就诊记录</text>
+    </view>
+
+    <view class="identity-action" wx:if="{{userInfo}}" bindtap="editProfile">编辑</view>
+  </view>
+
+  <!-- 数据概览 -->
+  <view class="stats" wx:if="{{userInfo}}">
+    <view class="stat" bindtap="viewMyAppointments">
+      <text class="stat-num">{{appointmentStats.total || 0}}</text>
+      <text class="stat-label">我的预约</text>
+    </view>
+    <view class="stat-line"></view>
+    <view class="stat" bindtap="viewMyCollections">
+      <text class="stat-num">{{appointmentStats.collections || 0}}</text>
+      <text class="stat-label">我的收藏</text>
+    </view>
+    <view class="stat-line"></view>
+    <view class="stat" bindtap="viewMyReviews">
+      <text class="stat-num">{{appointmentStats.reviews || 0}}</text>
+      <text class="stat-label">我的评价</text>
+    </view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-block" wx:if="{{!userInfo}}">
+    <text class="login-tip">登录后可预约挂号、查看就诊记录</text>
+    <button class="btn-primary" bindtap="login">立即登录</button>
+  </view>
+
+  <!-- 预约管理 -->
+  <view class="group">
+    <text class="group-title">预约管理</text>
+    <view class="row" bindtap="viewMyAppointments">
+      <view class="row-ico">约</view>
+      <text class="row-label">我的预约</text>
+      <text class="row-badge" wx:if="{{appointmentStats.pending > 0}}">{{appointmentStats.pending}}</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewUpcomingAppointments">
+      <view class="row-ico">诊</view>
+      <text class="row-label">即将就诊</text>
+      <text class="row-badge" wx:if="{{appointmentStats.upcoming > 0}}">{{appointmentStats.upcoming}}</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewHistoryAppointments">
+      <view class="row-ico">史</view>
+      <text class="row-label">历史记录</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 个人服务 -->
+  <view class="group">
+    <text class="group-title">个人服务</text>
+    <view class="row" bindtap="viewMyCollections">
+      <view class="row-ico">藏</view>
+      <text class="row-label">我的收藏</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewMyReviews">
+      <view class="row-ico">评</view>
+      <text class="row-label">我的评价</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewHealthRecords">
+      <view class="row-ico">档</view>
+      <text class="row-label">健康档案</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewConsultHistory">
+      <view class="row-ico">询</view>
+      <text class="row-label">咨询记录</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 设置与帮助 -->
+  <view class="group">
+    <text class="group-title">设置与帮助</text>
+    <view class="row" bindtap="editProfile">
+      <view class="row-ico">人</view>
+      <text class="row-label">个人信息</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="changePhone">
+      <view class="row-ico">机</view>
+      <text class="row-label">手机绑定</text>
+      <text class="row-status" wx:if="{{userInfo && userInfo.phone}}">已绑定</text>
+      <text class="row-status" wx:else>未绑定</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewSettings">
+      <view class="row-ico">设</view>
+      <text class="row-label">系统设置</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewHelp">
+      <view class="row-ico">助</view>
+      <text class="row-label">帮助中心</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="row" bindtap="viewAbout">
+      <view class="row-ico">关</view>
+      <text class="row-label">关于我们</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 快捷服务 -->
+  <view class="quick">
+    <view class="quick-item" bindtap="quickAppointment">
+      <view class="quick-ico">约</view>
+      <text class="quick-txt">快速预约</text>
+    </view>
+    <view class="quick-item" bindtap="quickConsult">
+      <view class="quick-ico">询</view>
+      <text class="quick-txt">在线咨询</text>
+    </view>
+    <view class="quick-item" bindtap="emergencyHelp">
+      <view class="quick-ico">急</view>
+      <text class="quick-txt">紧急求助</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout" wx:if="{{userInfo}}" bindtap="logout">
+    <text class="logout-text">退出登录</text>
+  </view>
+</view>

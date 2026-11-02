@@ -1,0 +1,39 @@
+<!-- 用户协议页面 -->
+<view class="doc-page">
+  <scroll-view class="doc-scroll" scroll-y>
+    <view class="doc-section">
+      <text class="doc-title">一、总则</text>
+      <text class="doc-text">欢迎使用医疗预约小程序！本协议是您与医疗预约小程序之间就相关服务所订立的协议。请仔细阅读本协议，您点击"同意"按钮后，本协议即构成对双方有约束力的法律文件。</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">二、服务内容</text>
+      <text class="doc-text">1. 提供医疗预约服务
+2. 医生信息查询
+3. 健康资讯浏览
+4. 个人健康档案管理</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">三、用户权利与义务</text>
+      <text class="doc-text">1. 用户有权使用本小程序提供的各项服务
+2. 用户应保证提供的信息真实、准确、完整
+3. 用户不得利用本服务从事任何违法活动
+4. 用户应妥善保管账号信息</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">四、隐私保护</text>
+      <text class="doc-text">我们承诺保护用户隐私，具体内容详见《隐私政策》。</text>
+    </view>
+
+    <view class="doc-section">
+      <text class="doc-title">五、免责声明</text>
+      <text class="doc-text">本小程序提供的医疗信息仅供参考，不能替代专业医疗建议。如有医疗需求，请及时就医。</text>
+    </view>
+  </scroll-view>
+
+  <view class="doc-footer">
+    <view class="doc-btn" bindtap="agreeAndBack">同意并返回</view>
+  </view>
+</view>

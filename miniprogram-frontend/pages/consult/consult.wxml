@@ -1,0 +1,63 @@
+<!-- 在线咨询页面 -->
+<view class="page-container">
+  <!-- 医生信息头部 -->
+  <view class="doctor-header">
+    <image class="doctor-avatar" src="{{doctor.avatar}}" mode="aspectFill" binderror="onImageError"></image>
+    <view class="doctor-info">
+      <view class="doctor-name">{{doctor.name}}</view>
+      <view class="doctor-title">{{doctor.title}}</view>
+      <view class="doctor-specialty">{{doctor.specialty}}</view>
+    </view>
+    <view class="consult-status">
+      <view class="status-dot online"></view>
+      <view class="status-text">在线</view>
+    </view>
+  </view>
+
+  <!-- 聊天区域 -->
+  <view class="chat-container">
+    <view class="chat-messages">
+      <view class="message-item {{item.sender === 'patient' ? 'patient-message' : 'doctor-message'}}" 
+            wx:for="{{messages}}" wx:key="id">
+        <view class="message-avatar">
+          <image wx:if="{{item.sender === 'doctor'}}" 
+                 src="{{doctor.avatar}}" 
+                 mode="aspectFill"
+                 binderror="onMessageAvatarError"
+                 data-sender="doctor"></image>
+          <image wx:else src="{{userInfo.avatar}}" 
+                 mode="aspectFill"
+                 binderror="onMessageAvatarError"
+                 data-sender="user"></image>
+        </view>
+        <view class="message-content">
+          <view class="message-text">{{item.content}}</view>
+          <view class="message-time">{{item.created_at}}</view>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-chat" wx:if="{{messages.length === 0}}">
+        <image class="empty-icon" src="../../images/empty-chat.png"></image>
+        <view class="empty-text">暂无聊天记录</view>
+        <view class="empty-tip">开始与医生对话吧</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-container">
+    <view class="input-box">
+      <input class="message-input" 
+             placeholder="输入消息..." 
+             value="{{message}}" 
+             bindinput="onMessageInput"
+             bindconfirm="sendMessage"/>
+      <button class="send-btn {{isSending ? 'disabled' : ''}}" 
+              bindtap="sendMessage"
+              disabled="{{isSending}}">
+        {{isSending ? '发送中...' : '发送'}}
+      </button>
+    </view>
+  </view>
+</view>

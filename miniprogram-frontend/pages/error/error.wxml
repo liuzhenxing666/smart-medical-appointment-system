@@ -1,0 +1,66 @@
+<!-- 错误页面 -->
+<view class="error-container">
+  <view class="error-mark">!</view>
+
+  <view class="error-title">{{title}}</view>
+
+  <view class="error-description">{{description}}</view>
+
+  <view class="action-buttons">
+    <button
+      class="action-btn primary-btn"
+      bindtap="handleRetry"
+      wx:if="{{showRetry}}"
+    >
+      {{retryText}}
+    </button>
+
+    <button
+      class="action-btn secondary-btn"
+      bindtap="goHome"
+      wx:if="{{showHome}}"
+    >
+      返回首页
+    </button>
+
+    <button
+      class="action-btn outline-btn"
+      bindtap="contactService"
+      wx:if="{{showContact}}"
+    >
+      联系客服
+    </button>
+
+    <button
+      class="action-btn primary-btn"
+      bindtap="reLogin"
+      wx:if="{{showRelogin}}"
+    >
+      重新登录
+    </button>
+
+    <button
+      class="action-btn primary-btn"
+      bindtap="onLogin"
+      wx:if="{{showLogin}}"
+    >
+      立即登录
+    </button>
+  </view>
+
+  <view class="error-details" wx:if="{{showDetails}}">
+    <view class="details-header" bindtap="toggleDetails">
+      <text class="details-title">错误详情</text>
+      <view class="details-arrow {{detailsExpanded ? 'is-open' : ''}}"></view>
+    </view>
+
+    <view class="details-content" wx:if="{{detailsExpanded}}">
+      <text class="details-text">{{errorDetails}}</text>
+    </view>
+  </view>
+
+  <view class="footer-tips">
+    <text class="tip-text">如果问题持续存在，请联系客服</text>
+    <text class="contact-info">客服电话：400-123-4567</text>
+  </view>
+</view>

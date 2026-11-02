@@ -1,0 +1,53 @@
+{
+  "description": "智慧医疗预约平台 - 终极修复配置",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "coverView": true,
+    "compileHotReLoad": true,
+    "autoAudits": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "enableEngineNative": false,
+    "bundle": false,
+    "useIsolateContext": true,
+    "useCompilerModule": false,
+    "minifyWXSS": true,
+    "compileWorklet": false,
+    "minified": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.11.0",
+  "appid": "wxf68453ac1f76b1fa",
+  "projectname": "智慧医疗预约平台",
+  "miniprogramRoot": "./",
+  "srcMiniprogramRoot": "./",
+  "pluginRoot": "./",
+  "packOptions": {
+    "ignore": []
+  },
+  "isGameTourist": false,
+  "cloudfunctionTemplateRoot": "",
+  "condition": {},
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
+}

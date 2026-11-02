@@ -1,0 +1,188 @@
+/* 在线咨询页面样式 */
+.page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+/* 医生头部 */
+.doctor-header {
+  background: white;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+}
+
+.doctor-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.doctor-info {
+  flex: 1;
+}
+
+.doctor-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.doctor-title {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+.doctor-specialty {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.consult-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}
+
+.status-dot.online {
+  background-color: #07c160;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 聊天区域 */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20rpx;
+}
+
+.chat-messages {
+  min-height: 100%;
+}
+
+.message-item {
+  display: flex;
+  margin-bottom: 30rpx;
+  align-items: flex-start;
+}
+
+.message-item.patient-message {
+  flex-direction: row-reverse;
+}
+
+.message-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.message-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.message-content {
+  max-width: 500rpx;
+  margin: 0 20rpx;
+}
+
+.message-text {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.patient-message .message-text {
+  background: #07c160;
+  color: white;
+}
+
+.doctor-message .message-text {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.message-time {
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 8rpx;
+  text-align: center;
+}
+
+/* 空状态 */
+.empty-chat {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-top: 20rpx;
+}
+
+.empty-tip {
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 10rpx;
+}
+
+/* 输入区域 */
+.input-container {
+  background: white;
+  border-top: 1rpx solid #eee;
+  padding: 20rpx;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+}
+
+.message-input {
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 40rpx;
+  padding: 20rpx 30rpx;
+  font-size: 28rpx;
+  margin-right: 20rpx;
+}
+
+.send-btn {
+  background: #07c160;
+  color: white;
+  border: none;
+  border-radius: 40rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.send-btn.disabled {
+  background: #ccc;
+}

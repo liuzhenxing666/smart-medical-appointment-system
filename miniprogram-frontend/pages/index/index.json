@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "智慧医疗预约平台",
+  "navigationBarBackgroundColor": "#0d9488",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f7f7f5",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {}
+}

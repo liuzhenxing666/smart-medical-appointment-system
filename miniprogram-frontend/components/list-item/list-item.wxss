@@ -1,0 +1,114 @@
+/* 列表项组件样式 */
+.list-item {
+  display: flex;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.item-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: var(--radius-md);
+  margin-right: var(--spacing-md);
+  background-color: var(--bg-secondary);
+}
+
+.item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.item-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-right: var(--spacing-sm);
+}
+
+.item-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-sm);
+}
+
+.item-desc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+}
+
+.item-stats {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-md);
+}
+
+.stat-icon {
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+  margin-right: var(--spacing-xs);
+}
+
+.stat-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-right: var(--spacing-xs);
+}
+
+.stat-count {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xs);
+}
+
+.tag {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  margin-right: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.item-actions {
+  position: absolute;
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}

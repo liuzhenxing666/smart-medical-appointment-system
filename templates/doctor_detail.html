@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医生详情 - 智能医疗预约系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .doctor-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .doctor-info-card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .doctor-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        .schedule-slot {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .schedule-slot:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+        .schedule-slot.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .schedule-slot.unavailable {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        .review-card {
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-stethoscope me-2"></i>
+                智能医疗预约系统
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/hospital-list/">
+                    <i class="fas fa-hospital me-1"></i>医院列表
+                </a>
+                <a class="nav-link" href="/appointment-list/">
+                    <i class="fas fa-calendar-check me-1"></i>我的预约
+                </a>
+                <a class="nav-link" href="/profile/">
+                    <i class="fas fa-user me-1"></i>个人中心
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 医生头部信息 -->
+    <div class="doctor-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <img id="doctor-avatar" src="/static/images/doctor-default.png" 
+                         class="doctor-avatar" alt="医生头像">
+                </div>
+                <div class="col-md-9">
+                    <h1 id="doctor-name" class="mb-2">医生姓名</h1>
+                    <div class="d-flex flex-wrap gap-3 mb-3">
+                        <span id="doctor-title" class="badge bg-light text-dark fs-6">职称</span>
+                        <span id="doctor-department" class="badge bg-info fs-6">科室</span>
+                        <span id="doctor-hospital" class="badge bg-secondary fs-6">医院</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="rating-stars" id="doctor-rating">
+                            ★★★★★
+                            <span class="ms-2">0.0</span>
+                        </div>
+                        <span id="doctor-experience" class="text-light">从业0年</span>
+                        <span id="doctor-fee" class="text-light">¥0 咨询费</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- 左侧主要内容 -->
+            <div class="col-lg-8">
+                <!-- 医生简介 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-user-md text-primary"></i> 医生简介</h4>
+                        <div id="doctor-bio" class="mt-3">
+                            <p>医生简介加载中...</p>
+                        </div>
+                        <div id="doctor-specialties" class="mt-3">
+                            <h6><strong>专业方向：</strong></h6>
+                            <p>专业方向加载中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 排班信息 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-calendar-alt text-success"></i> 排班信息</h4>
+                        <div class="mb-3">
+                            <label for="schedule-date" class="form-label">选择日期：</label>
+                            <input type="date" id="schedule-date" class="form-control" 
+                                   onchange="loadSchedules()">
+                        </div>
+                        <div id="schedules-container" class="mt-3">
+                            <p class="text-muted">请选择日期查看排班信息</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 患者评价 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-comments text-warning"></i> 患者评价</h4>
+                        <div id="reviews-container" class="mt-3">
+                            <p class="text-muted">评价信息加载中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧操作面板 -->
+            <div class="col-lg-4">
+                <!-- 预约操作 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-calendar-check text-danger"></i> 立即预约</h4>
+                        <div class="mt-3">
+                            <div class="mb-3">
+                                <label class="form-label">选择时间：</label>
+                                <div id="selected-time" class="alert alert-info">
+                                    请先选择排班时间
+                                </div>
+                            </div>
+                            <button id="book-appointment-btn" class="btn btn-primary w-100" 
+                                    onclick="bookAppointment()" disabled>
+                                <i class="fas fa-calendar-plus"></i> 确认预约
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速操作 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-bolt text-warning"></i> 快速操作</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-outline-primary" onclick="viewHospital()">
+                                <i class="fas fa-hospital"></i> 查看医院
+                            </button>
+                            <button class="btn btn-outline-success" onclick="addToFavorites()">
+                                <i class="fas fa-heart"></i> 收藏医生
+                            </button>
+                            <button class="btn btn-outline-info" onclick="shareDoctor()">
+                                <i class="fas fa-share-alt"></i> 分享医生
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 联系信息 -->
+                <div class="card doctor-info-card">
+                    <div class="card-body">
+                        <h4><i class="fas fa-phone text-success"></i> 联系信息</h4>
+                        <div class="mt-3">
+                            <p><i class="fas fa-phone me-2"></i> <span id="doctor-phone">电话加载中...</span></p>
+                            <p><i class="fas fa-envelope me-2"></i> <span id="doctor-email">邮箱加载中...</span></p>
+                            <p><i class="fas fa-map-marker-alt me-2"></i> <span id="doctor-address">地址加载中...</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 智能医疗预约系统. 保留所有权利.</p>
+            <div class="mt-2">
+                <a href="#" class="text-light me-3">关于我们</a>
+                <a href="#" class="text-light me-3">联系我们</a>
+                <a href="#" class="text-light">隐私政策</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 医生详情页面JavaScript -->
+    <script>
+        // 全局变量
+        let doctor = null;
+        let selectedSchedule = null;
+        let doctorId = null;
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从URL获取医生ID
+            const pathParts = window.location.pathname.split('/');
+            doctorId = pathParts[pathParts.length - 2]; // 获取倒数第二个部分
+            
+            if (doctorId) {
+                loadDoctorDetail();
+                loadReviews();
+                
+                // 设置默认日期为明天
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('schedule-date').value = tomorrow.toISOString().split('T')[0];
+            } else {
+                alert('未指定医生ID');
+            }
+        });
+
+        // 加载医生详情
+        async function loadDoctorDetail() {
+            try {
+                const response = await fetch(`/api/doctors/${doctorId}/`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    doctor = result.data;
+                    displayDoctorInfo();
+                } else {
+                    throw new Error(result.message || '获取医生详情失败');
+                }
+            } catch (error) {
+                console.error('Error loading doctor detail:', error);
+                // 如果API调用失败，使用模拟数据进行测试
+                console.log('API调用失败，使用模拟医生数据进行测试');
+                doctor = getMockDoctor();
+                displayDoctorInfo();
+            }
+        }
+
+        // 模拟医生数据（用于测试）
+        function getMockDoctor() {
+            return {
+                id: doctorId,
+                name: '张医生',
+                title: '主任医师',
+                department_name: '内科',
+                hospital_name: '北京协和医院',
+                specialty: '心血管疾病',
+                bio: '毕业于北京医科大学，从事心血管内科工作15年，擅长冠心病、高血压、心力衰竭等疾病的诊断和治疗。',
+                experience_years: 15,
+                average_rating: 4.9,
+                review_count: 120,
+                consultation_fee: 50,
+                phone: '010-12345678',
+                email: 'doctor@example.com',
+                address: '北京市东城区王府井大街1号',
+                avatar: '/static/images/doctor-default.png'
+            };
+        }
+
+        // 显示医生信息
+        function displayDoctorInfo() {
+            if (!doctor) return;
+
+            // 更新头像
+            document.getElementById('doctor-avatar').src = doctor.avatar || '/static/images/doctor-default.png';
+            
+            // 更新基本信息
+            document.getElementById('doctor-name').textContent = doctor.name;
+            document.getElementById('doctor-title').textContent = doctor.title;
+            document.getElementById('doctor-department').textContent = doctor.department_name;
+            document.getElementById('doctor-hospital').textContent = doctor.hospital_name;
+            
+            // 更新评分和统计信息
+            const ratingStars = '★'.repeat(Math.round(doctor.average_rating || 0)) + 
+                              '☆'.repeat(5 - Math.round(doctor.average_rating || 0));
+            document.getElementById('doctor-rating').innerHTML = 
+                `${ratingStars} <span class="ms-2">${doctor.average_rating || 0}</span>`;
+            
+            document.getElementById('doctor-experience').textContent = `从业${doctor.experience_years || 0}年`;
+            document.getElementById('doctor-fee').textContent = `¥${doctor.consultation_fee || 0} 咨询费`;
+            
+            // 更新简介和专业方向
+            document.getElementById('doctor-bio').innerHTML = 
+                `<p>${doctor.bio || '暂无医生简介'}</p>`;
+            document.getElementById('doctor-specialties').innerHTML = 
+                `<h6><strong>专业方向：</strong></h6><p>${doctor.specialty || '暂无专业方向信息'}</p>`;
+            
+            // 更新联系信息
+            document.getElementById('doctor-phone').textContent = doctor.phone || '暂无电话';
+            document.getElementById('doctor-email').textContent = doctor.email || '暂无邮箱';
+            document.getElementById('doctor-address').textContent = doctor.address || '暂无地址';
+        }
+
+        // 加载排班信息
+        async function loadSchedules() {
+            const date = document.getElementById('schedule-date').value;
+            if (!date) return;
+
+            try {
+                const response = await fetch(`/api/doctors/${doctorId}/schedules/?date=${date}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displaySchedules(result.data.results || result.data);
+                } else {
+                    throw new Error(result.message || '获取排班信息失败');
+                }
+            } catch (error) {
+                console.error('Error loading schedules:', error);
+                // 如果API调用失败，使用模拟数据进行测试
+                console.log('API调用失败，使用模拟排班数据进行测试');
+                const mockSchedules = getMockSchedules();
+                displaySchedules(mockSchedules);
+            }
+        }
+
+        // 模拟排班数据（用于测试）
+        function getMockSchedules() {
+            return [
+                {
+                    id: '1',
+                    date: document.getElementById('schedule-date').value,
+                    start_time: '09:00',
+                    end_time: '12:00',
+                    available_slots: 5,
+                    is_available: true
+                },
+                {
+                    id: '2',
+                    date: document.getElementById('schedule-date').value,
+                    start_time: '14:00',
+                    end_time: '17:00',
+                    available_slots: 3,
+                    is_available: true
+                },
+                {
+                    id: '3',
+                    date: document.getElementById('schedule-date').value,
+                    start_time: '18:00',
+                    end_time: '21:00',
+                    available_slots: 0,
+                    is_available: false
+                }
+            ];
+        }
+
+        // 显示排班信息
+        function displaySchedules(schedules) {
+            const container = document.getElementById('schedules-container');
+            
+            if (!schedules || schedules.length === 0) {
+                container.innerHTML = '<p class="text-muted">该日期暂无排班信息</p>';
+                return;
+            }
+
+            let html = '<div class="row">';
+            schedules.forEach(schedule => {
+                const isAvailable = schedule.is_available && schedule.available_slots > 0;
+                const slotClass = isAvailable ? 'schedule-slot' : 'schedule-slot unavailable';
+                
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="${slotClass} ${selectedSchedule && selectedSchedule.id === schedule.id ? 'selected' : ''}" 
+                             onclick="${isAvailable ? `selectSchedule('${schedule.id}')` : ''}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${schedule.start_time} - ${schedule.end_time}</strong>
+                                    <br>
+                                    <small>剩余号源: ${schedule.available_slots}</small>
+                                </div>
+                                ${isAvailable ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // 选择排班时间
+        function selectSchedule(scheduleId) {
+            const date = document.getElementById('schedule-date').value;
+            
+            // 这里应该通过API获取具体的排班信息
+            // 暂时使用模拟数据
+            selectedSchedule = {
+                id: scheduleId,
+                date: date,
+                start_time: '09:00',
+                end_time: '12:00'
+            };
+            
+            // 更新UI
+            document.querySelectorAll('.schedule-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            document.querySelector(`[onclick*="${scheduleId}"]`).classList.add('selected');
+            
+            // 更新选择的时间显示
+            document.getElementById('selected-time').innerHTML = 
+                `<strong>${date} ${selectedSchedule.start_time}-${selectedSchedule.end_time}</strong>`;
+            
+            // 启用预约按钮
+            document.getElementById('book-appointment-btn').disabled = false;
+        }
+
+        // 加载评价信息
+        async function loadReviews() {
+            try {
+                const response = await fetch(`/api/doctors/${doctorId}/reviews/`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayReviews(result.data.results || result.data);
+                } else {
+                    throw new Error(result.message || '获取评价信息失败');
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                // 如果API调用失败，使用模拟数据进行测试
+                console.log('API调用失败，使用模拟评价数据进行测试');
+                const mockReviews = getMockReviews();
+                displayReviews(mockReviews);
+            }
+        }
+
+        // 模拟评价数据（用于测试）
+        function getMockReviews() {
+            return [
+                {
+                    id: '1',
+                    patient_name: '张**',
+                    rating: 5,
+                    comment: '张医生医术高超，态度和蔼，非常专业！',
+                    created_at: '2024-01-15'
+                },
+                {
+                    id: '2',
+                    patient_name: '李**',
+                    rating: 4,
+                    comment: '治疗效果不错，就是等待时间有点长。',
+                    created_at: '2024-01-10'
+                }
+            ];
+        }
+
+        // 显示评价信息
+        function displayReviews(reviews) {
+            const container = document.getElementById('reviews-container');
+            
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = '<p class="text-muted">暂无患者评价</p>';
+                return;
+            }
+
+            let html = '';
+            reviews.forEach(review => {
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                html += `
+                    <div class="card review-card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>${review.patient_name}</strong>
+                                <div class="rating-stars">${stars}</div>
+                            </div>
+                            <p class="mb-2">${review.comment}</p>
+                            <small class="text-muted">${review.created_at}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // 预约功能
+        function bookAppointment() {
+            if (!selectedSchedule) {
+                alert('请先选择预约时间');
+                return;
+            }
+
+            if (!doctor) {
+                alert('医生信息加载失败');
+                return;
+            }
+
+            // 跳转到预约页面
+            window.location.href = `/appointment-booking/?doctor_id=${doctorId}&schedule_id=${selectedSchedule.id}`;
+        }
+
+        // 查看医院
+        function viewHospital() {
+            if (doctor && doctor.hospital_id) {
+                window.location.href = `/hospital-detail/${doctor.hospital_id}/`;
+            } else {
+                alert('医院信息暂不可用');
+            }
+        }
+
+        // 收藏医生
+        function addToFavorites() {
+            alert('收藏功能开发中...');
+        }
+
+        // 分享医生
+        function shareDoctor() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `${doctor.name} - ${doctor.title}`,
+                    text: `推荐${doctor.name}医生，专业方向：${doctor.specialty}`,
+                    url: window.location.href
+                });
+            } else {
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href);
+                alert('链接已复制到剪贴板');
+            }
+        }
+    </script>
+</body>
+</html>

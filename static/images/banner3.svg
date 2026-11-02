@@ -1,0 +1,4 @@
+<svg width="800" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="300" fill="#FF9800"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial" font-size="24" fill="white">医院预约系统 Banner 3</text>
+</svg>

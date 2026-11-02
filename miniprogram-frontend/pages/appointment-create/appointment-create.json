@@ -1,0 +1,9 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "预约医生",
+  "navigationBarBackgroundColor": "#0d9488",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f7f7f5",
+  "enablePullDownRefresh": false,
+  "backgroundTextStyle": "dark"
+}

@@ -1,0 +1,86 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage/
+htmlcov/
+.pytest_cache/
+
+# Production
+/staticfiles/
+/media/
+.env
+.env.production
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Logs
+logs/
+*.log
+
+# Package files
+*.egg/
+*.egg-info/
+dist/
+build/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Debug
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 依赖安装残留（pip 中断产生）
+pip-build-tracker-*/
+pip-install-*/
+
+# 工具与本地配置
+.trae/
+.claude/
+project.private.config.json
+miniprogram-frontend/project.private.config.json
+miniprogram-frontend/.git.bak/
+
+# 备份文件
+*.bak
